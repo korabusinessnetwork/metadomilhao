@@ -27,7 +27,7 @@ O cliente fala com o Supabase pelo SDK, sempre via `src/lib/services`. Edge Func
 - Ficaram desnecessárias: o rascunho do fechamento é calculado quando a tela abre, e o status do dia de trade é calculado das operações (`status_travas`). Ver `memory/decisions.md`.
 
 ### `importar-operacoes` (Fase 4)
-- Entrada: CSV/relatório do MT5 ou payload do KORA TRADER, autenticado.
+- Entrada: relatório exportado do MT5, autenticado.
 - Grava `operacao` com `origem`, passando pelas mesmas travas e validações.
 
 ## Erros

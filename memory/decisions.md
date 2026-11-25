@@ -18,7 +18,8 @@
 
 ## Decisões de produto registradas fora de ADR
 - Sistemática começa na data de mudança configurada no perfil (F-01, F-02).
-- Registro de trade manual na Fase 2, importação MT5 e KORA TRADER na Fase 4.
+- Registro de trade manual na Fase 2, importação MT5 na Fase 4.
+- **KORA TRADER fora do escopo (2026-11-25):** é outro produto. Saiu do backlog e da origem das operações (migration `20261125000005`).
 - Ativos: ações e mini-índice.
 
 ## Decisões da Fase 1 (2026-11-25)

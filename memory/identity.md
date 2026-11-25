@@ -68,7 +68,7 @@ Chegar ao primeiro milhão (em dinheiro de hoje) com um plano medido mês a mês
 - **Fase 1, MVP (mês 1 após a mudança):** orçamento, lançamentos, metas diária/mensal/anual, patrimônio, plano do milhão.
 - **Fase 2, Diário de trade:** registro detalhado, travas no banco, estatísticas, IR mensal.
 - **Fase 3, Revisão de notícias por IA:** watchlist e revisão pré-pregão com trava de custo.
-- **Fase 4, Integrações:** importação do MT5 e do KORA TRADER, exportações.
+- **Fase 4, Integrações:** importação do MT5, fila offline de gastos, exportações.
 
 ## Critérios de aceite
 - [x] Propósito central claro

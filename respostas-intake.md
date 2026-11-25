@@ -29,7 +29,7 @@ Data: 2026-11-25. Fonte de verdade das escolhas iniciais.
 - **Metas diárias:** limite de gasto do dia + meta de lucro e limite de perda no trade.
 - **Travas:** ao bater o limite de perda do dia ou do mês, bloquear novos registros até o período seguinte. (ADR-003)
 - **Ativos:** ações e mini-índice.
-- **Registro de trade:** manual detalhado agora, importação MT5 e KORA TRADER no roadmap.
+- **Registro de trade:** manual detalhado agora, importação MT5 e KORA TRADER no roadmap. (Atualização 25/11/2026: KORA TRADER saiu do escopo, é outro produto.)
 - **Campos extras do trade:** setup e contexto (FVG, tendência, timeframe, notícias).
 - **IA:** revisão diária de notícias dos ativos operados, antes do pregão (por volta das 8h30).
 - **Início:** a sistemática começa depois da mudança de moradia (cerca de 3 meses).

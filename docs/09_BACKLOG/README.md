@@ -42,7 +42,6 @@
 
 ## Fase 4, Integrações
 - [ ] Importar operações do MT5 (aguardando um relatório exportado de exemplo)
-- [ ] Receber operações do KORA TRADER (aguardando o formato e onde ele roda)
 - [x] Fila offline de lançamentos: gasto sem internet fica no aparelho, sobe sozinho, não duplica, recusa fica visível
 
 ## Ideias (não priorizadas)

@@ -85,7 +85,7 @@ erDiagram
 | `seguiu_plano` | bool | |
 | `observacao` | text null | |
 | `violacao_trava` | bool default false | TR-03 |
-| `origem` | enum `manual`, `mt5`, `kora_trader` | Fase 4 |
+| `origem` | enum `manual`, `mt5` | Fase 4 |
 
 ### apuracao_ir
 `mes`, `lucro_liquido_dt`, `prejuizo_acumulado_dt`, `irrf_estimado`, `imposto_devido`, `vencimento date`, `pago bool`.

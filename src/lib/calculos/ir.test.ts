@@ -23,6 +23,11 @@ describe('IR de day trade (IR-01 a IR-04)', () => {
     expect(vencimentoDarf('2027-06-01')).toBe('2027-07-30') // 31/07 é sábado
   })
 
+  it('IR-04: pula feriado nacional no último dia do mês', () => {
+    expect(vencimentoDarf('2027-03-01', ['2027-04-30'])).toBe('2027-04-29')
+    expect(vencimentoDarf('2027-03-01', ['2027-04-30', '2027-04-29'])).toBe('2027-04-28')
+  })
+
   it('IR-01 e IR-02: 20% do lucro líquido menos 1% retido sobre cada dia positivo', () => {
     const [m] = apurarIR([{ mes: '2027-03-01', resultadosDiariosCentavos: [100000, -20000, 50000] }])
     expect(m).toMatchObject({

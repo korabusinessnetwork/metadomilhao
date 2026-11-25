@@ -7,3 +7,5 @@ dev-dist
 supabase/.branches
 supabase/.temp
 *.log
+supabase/functions/.env
+tsconfig.tsbuildinfo

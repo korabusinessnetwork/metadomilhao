@@ -19,5 +19,10 @@
 - **Trava precisa de memória.** Regra de "bateu o limite" é sobre o caminho, não sobre o saldo do fim.
 - **Comparação com zero engana de novo:** `0 <= -0` é verdadeiro. Limite sem capital tem que ser tratado à parte.
 
+## Da Fase 3 (25/11/2026)
+- **API falsa paga o teste ponta a ponta.** Testar teto, nova tentativa, recusa e chave inválida sem gastar um centavo exigiu só um servidor local de 80 linhas.
+- **Supabase novo não concede nada nem ao `service_role`.** Toda tabela precisa de `grant` explícito, inclusive para a Edge Function.
+- **Roteiro de teste mexe só no que é dele.** O primeiro roteiro apagava revisões de todos e quebrou quando uma operação real passou a referenciar uma.
+
 ## Formato
 Cada aprendizado novo: data, o que aconteceu, o que muda no sistema (regra, ADR ou backlog).

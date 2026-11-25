@@ -38,6 +38,7 @@ export function Layout() {
 
 export function Mais() {
   const itens = [
+    { para: '/noticias', nome: 'Notícias', texto: 'Revisão pré-pregão, watchlist e uso da IA' },
     { para: '/patrimonio', nome: 'Patrimônio', texto: 'Ativos, reserva e movimentos' },
     { para: '/orcamento', nome: 'Orçamento', texto: 'Categorias, valores e renda prevista' },
     { para: '/fechamento', nome: 'Fechamento', texto: 'Fechar o mês e recalcular o plano' },

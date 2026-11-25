@@ -167,6 +167,7 @@ export interface Operacao {
   seguiu_plano: boolean | null
   observacao: string | null
   violacao_trava: boolean
+  revisao_noticias_id: string | null
 }
 
 export interface StatusTravasBanco {
@@ -190,4 +191,56 @@ export interface PagamentoIR {
   mes: string
   valor_centavos: number
   pago_em: string
+}
+
+// ---------- Fase 3: notícias ----------
+export interface ItemWatchlistBanco {
+  id: string
+  ativo: string
+  mercado: Mercado
+  ativa: boolean
+}
+
+export interface NoticiaRevisao {
+  titulo: string
+  resumo: string
+  fonte: string
+  url: string
+}
+
+export interface AtivoRevisao {
+  ativo: string
+  noticias: NoticiaRevisao[]
+  possivel_impacto: string
+  riscos_do_dia: string[]
+  sem_novidades: boolean
+}
+
+export interface AgendaRevisao {
+  hora: string
+  evento: string
+  pais: string
+  relevancia: string
+}
+
+export interface RevisaoNoticias {
+  id: string
+  data: string
+  gerada_em: string
+  origem: 'agendada' | 'manual'
+  modelo: string | null
+  conteudo: AtivoRevisao[] | null
+  agenda: AgendaRevisao[] | null
+  contexto_geral: string | null
+  custo_estimado_centavos: number
+  status: 'ok' | 'sem_orcamento' | 'erro'
+  aviso_orcamento: boolean
+  erro: string | null
+}
+
+export interface UsoIA {
+  mes: string
+  chamadas: number
+  buscas: number
+  custo_estimado_centavos: number
 }

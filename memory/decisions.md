@@ -42,7 +42,16 @@
 - **IRRF que sobra passa para os meses seguintes** (prática da Receita); o mínimo de R$ 10 do DARF é só aviso, não entra no cálculo.
 - **Navegação:** 5 itens + "+" (Hoje, Gastos, +, Trade, Plano, Mais). O "+" abre gasto; operação se registra na tela Trade.
 
+## Decisões da Fase 3 (2026-11-25)
+- **Modelo da revisão:** `claude-haiku-5-5` (o mais econômico, como pede o ADR-004), na variável `MODELO_REVISAO`. Esforço `low` por padrão.
+- **Busca:** `web_search_20250305` com `max_uses` (`MAX_BUSCAS`, padrão 5). A versão com filtragem dinâmica não é suportada pelo Haiku.
+- **Saída:** JSON pedido no prompt e validado no código (`supabase/functions/_compartilhado/revisao.ts`), com uma nova tentativa. Não usamos saída estruturada porque não confirmamos que ela combina com as citações da busca.
+- **Custo:** estimado pelo uso de cada chamada (tokens + buscas) × preços em variáveis × cotação, arredondado para cima. O que foi consumido conta mesmo se a revisão falhar.
+- **Escrita da IA só pela função:** `revisao_noticias` e `uso_ia` não aceitam insert do usuário; o uso soma por `registrar_uso_ia` (atômica, só `service_role`).
+- **Agendamento fora das migrations:** `supabase/agendamento.sql` guarda URL e segredo no Vault, por ambiente.
+- **Calendário:** `feriado_b3` com `nacional` (vale para o DARF) e `confirmado` (conferido com a B3). As travas reabrem no próximo dia de pregão.
+
 ## Em aberto
 - P-03 com mês fechado de gasto zero zera a meta da reserva. Decidir se mês sem gasto entra na média.
 - Regra exata de meta de lucro diária (M-10) a validar após 30 dias de operação real.
-- Calendário de feriados da B3: fonte e atualização anual. Hoje "dia útil" = segunda a sexta.
+- Calendário de feriados da B3: 2026 e 2027 vieram do calendário legal e estão com `confirmado = false`. Conferir com a B3 e cadastrar 2028 todo fim de ano.

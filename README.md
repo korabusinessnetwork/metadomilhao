@@ -2,7 +2,7 @@
 
 Sistema financeiro pessoal do Matheus: orçamento, metas diárias, mensais e anuais, plano até o primeiro milhão, carteira de investimentos e diário detalhado de day trade com revisão de notícias por IA antes do pregão.
 
-**Estado:** Fases 1 (MVP financeiro) e 2 (diário de trade) construídas e testadas no ambiente local. Falta publicar (Supabase na nuvem + Vercel).
+**Estado:** Fases 1 (MVP financeiro), 2 (diário de trade) e 3 (revisão de notícias por IA) construídas e testadas no ambiente local. Falta publicar (Supabase na nuvem + Vercel) e ligar a chave da API do Claude.
 **Início da sistemática:** depois da mudança de moradia, prevista para fevereiro de 2027.
 
 ## Rodar localmente
@@ -18,11 +18,21 @@ npm run dev
 
 O cadastro público é desligado. No ambiente local, crie o usuário com `scripts/criar-usuario-local.mjs` (instruções no próprio arquivo). No primeiro acesso o app pede o segundo fator (TOTP): sem ele, o banco não libera nenhum dado.
 
+## Revisão de notícias (Fase 3)
+
+```bash
+cp supabase/functions/.env.example supabase/functions/.env   # preencha os valores
+supabase functions serve revisao-noticias --env-file supabase/functions/.env
+```
+
+Para testar sem gastar: `node scripts/api-falsa-anthropic.mjs`, `ANTHROPIC_BASE_URL=http://host.docker.internal:8787` no `.env` e `bash scripts/e2e-revisao.sh`.
+Em produção: `supabase secrets set --env-file supabase/functions/.env`, `supabase functions deploy revisao-noticias` e o SQL de `supabase/agendamento.sql` uma vez.
+
 ## Testes
 
 ```bash
-npm test            # regras puras (M, P, PL, O, F, T, TR, IR), dinheiro, datas, CSV
-npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento, O-02, travas (ADR-003), T-04, T-08, P-02, P-04
+npm test            # regras puras (M, P, PL, O, F, T, TR, IR, IA), dinheiro, datas, CSV
+npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento, O-02, travas (ADR-003), T-04, T-08, P-02, P-04, calendário, IA-01, IA-05
 npm run build       # typecheck + build do PWA
 ```
 

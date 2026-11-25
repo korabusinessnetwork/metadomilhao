@@ -66,6 +66,8 @@ export function Estatisticas() {
   const e = estatisticasTrade(simples)
   const desempenho = desempenhoDe(simples, dataEmSaoPaulo())
   const selo = !e.amostraConfiavel && <span className="selo-amostra">amostra pequena</span>
+  // IA-05: medir se ler a revisão de notícias ajudou
+  const porRevisao = estatisticasTrade(simples.map((o, i) => ({ ...o, setup: dados.ops[i]!.revisao_noticias_id ? 'Com revisão lida' : 'Sem revisão' }))).porSetup
 
   return (
     <>
@@ -120,6 +122,7 @@ export function Estatisticas() {
           <div className="grade">
             <TabelaGrupos titulo="Por setup" grupos={e.porSetup} />
             <TabelaGrupos titulo="Por timeframe" grupos={e.porTimeframe} />
+            <TabelaGrupos titulo="Com e sem revisão de notícias (IA-05)" grupos={porRevisao} />
           </div>
         </>
       )}

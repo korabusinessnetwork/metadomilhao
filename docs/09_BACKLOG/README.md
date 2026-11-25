@@ -29,14 +29,16 @@
 - [x] Regra de aumento de risco (T-08) e entrada no plano (T-09)
 - [x] Apuração de IR e DARF estimado (IR-01 a IR-04)
 - [x] P-02 e P-04 aplicadas no banco
-- [ ] Feriados da B3 no "próximo dia útil" e no vencimento do DARF (depende do calendário da Fase 3)
+- [x] Feriados da B3 no "próximo dia útil" e no vencimento do DARF (Fase 3)
 
 ## Fase 3, Revisão de notícias por IA
-- [ ] Watchlist (máximo 10)
-- [ ] Calendário de pregão da B3
-- [ ] Edge Function + pg_cron 8h30
-- [ ] Trava de custo e painel de uso (IA-03)
-- [ ] Vínculo da revisão com a operação (IA-05)
+- [x] Watchlist (máximo 10, garantido no banco)
+- [x] Calendário de pregão da B3 (tabela `feriado_b3`, 2026 e 2027) usado nas travas e no DARF
+- [x] Edge Function `revisao-noticias` + agendamento pg_cron 8h30 (`supabase/agendamento.sql`)
+- [x] Trava de custo e painel de uso (IA-03)
+- [x] Vínculo da revisão com a operação (IA-05) e comparação nas estatísticas
+- [ ] Conferir os feriados de 2027 com o calendário oficial da B3 e marcar `confirmado`
+- [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem
 
 ## Fase 4, Integrações
 - [ ] Importar operações do MT5

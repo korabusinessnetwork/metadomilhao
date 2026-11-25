@@ -96,8 +96,8 @@ export function primeiroDiaUtilDoMes(mes: string): string {
   return d
 }
 
-export function ultimoDiaUtilDoMes(mes: string): string {
+export function ultimoDiaUtilDoMes(mes: string, feriados: string[] = []): string {
   let d = ultimoDiaDoMes(mes)
-  while (!eDiaUtil(d)) d = somarDias(d, -1)
+  while (!eDiaUtil(d) || feriados.includes(d)) d = somarDias(d, -1)
   return d
 }

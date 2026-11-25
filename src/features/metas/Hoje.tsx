@@ -8,9 +8,10 @@ import { premissasDoPlano } from '../../lib/calculos/plano'
 import { mesesAteMeta } from '../../lib/calculos/projecao'
 import { metaReserva } from '../../lib/calculos/reserva'
 import { resumoCarteira } from '../../lib/calculos/patrimonio'
-import { somarMeses } from '../../lib/calculos/datas'
+import { dataEmSaoPaulo, somarMeses } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
 import { statusHoje } from '../../lib/services/tradeService'
+import { revisaoDoDia } from '../../lib/services/noticiasService'
 import { TEXTO_MOTIVO } from '../../lib/calculos/travas'
 import { Aviso, BarraMeta, Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjecao } from '../../componentes/Basicos'
 
@@ -18,18 +19,19 @@ import { Aviso, BarraMeta, Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjeca
 export function Hoje() {
   const { perfil, plano } = useSessao()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [mes, carteira, fechamentos, trade] = await Promise.all([carregarDadosDoMes(), saldos(), historico(), statusHoje()])
+    const [mes, carteira, fechamentos, trade, revisao] = await Promise.all([carregarDadosDoMes(), saldos(), historico(), statusHoje(), revisaoDoDia(dataEmSaoPaulo())])
     if (mes.erro !== null) return mes
     if (carteira.erro !== null) return carteira
     if (fechamentos.erro !== null) return fechamentos
     if (trade.erro !== null) return trade
-    return ok({ mes: mes.dados, carteira: carteira.dados, fechamentos: fechamentos.dados, trade: trade.dados })
+    if (revisao.erro !== null) return revisao
+    return ok({ mes: mes.dados, carteira: carteira.dados, fechamentos: fechamentos.dados, trade: trade.dados, revisao: revisao.dados })
   }, [])
 
   if (carregando) return <Carregando />
   if (erro || !dados || !plano) return <ErroComAcao erro={erro ?? 'Plano não encontrado.'} tentarDeNovo={recarregar} />
 
-  const { mes, carteira, fechamentos, trade } = dados
+  const { mes, carteira, fechamentos, trade, revisao } = dados
   const premissas = premissasDoPlano(plano, perfil?.data_mudanca ?? null, mes.hoje)
   const resumo = resumoCarteira(
     carteira.filter((a) => a.ativo),
@@ -108,6 +110,21 @@ export function Hoje() {
             </>
           )}
           <Link to="/trade">Ir para o trade</Link>
+        </section>
+
+        <section className="painel" aria-labelledby="t-noticias">
+          <h2 id="t-noticias">Notícias do pregão</h2>
+          {!revisao ? (
+            <p className="mut">A revisão de hoje sai às 8h30 nos dias de pregão.</p>
+          ) : revisao.status === 'ok' ? (
+            <p>
+              {(revisao.conteudo ?? []).filter((a) => !a.sem_novidades).length} de {(revisao.conteudo ?? []).length} ativos com novidades
+              {(revisao.agenda ?? []).length > 0 ? `, ${(revisao.agenda ?? []).length} eventos na agenda` : ''}.
+            </p>
+          ) : (
+            <p className="bad">{revisao.status === 'sem_orcamento' ? 'Teto mensal da IA atingido.' : 'A revisão de hoje falhou.'}</p>
+          )}
+          <Link to="/noticias">Ver notícias</Link>
         </section>
 
         <section className="painel" aria-labelledby="t-milhao">

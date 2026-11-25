@@ -13,6 +13,7 @@ import { dataEmSaoPaulo, inicioDoMes, somarMeses, ultimoDiaDoMes } from '../../l
 import { ok } from '../../lib/services/resultado'
 import { listarOperacoes, listarTodasFechadas } from '../../lib/services/tradeService'
 import { apurarIR, mesesDeDayTrade } from '../../lib/calculos/ir'
+import { feriadosNacionais } from '../../lib/services/noticiasService'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjecao } from '../../componentes/Basicos'
 
 function nomeDoMes(mes: string) {
@@ -31,10 +32,11 @@ export function Fechamento() {
   const [enviando, setEnviando] = useState(false)
 
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [lanc, rendas, movs, orc, cats, hist, opsMes, opsTodas] = await Promise.all([
+    const [lanc, rendas, movs, orc, cats, hist, opsMes, opsTodas, feriados] = await Promise.all([
       listarMes(mes), listarRendas(mes), listarMovimentos(), obterMes(mes), listarCategorias(), historico(),
-      listarOperacoes(mes, ultimoDiaDoMes(mes)), listarTodasFechadas(),
+      listarOperacoes(mes, ultimoDiaDoMes(mes)), listarTodasFechadas(), feriadosNacionais(),
     ])
+    if (feriados.erro !== null) return feriados
     if (opsMes.erro !== null) return opsMes
     if (opsTodas.erro !== null) return opsTodas
     if (lanc.erro !== null) return lanc
@@ -44,7 +46,7 @@ export function Fechamento() {
     if (hist.erro !== null) return hist
     // Mês sem orçamento aberto conta como orçado zero
     const itens = orc.dados?.itens ?? []
-    return ok({ lancamentos: lanc.dados, rendas: rendas.dados, movimentos: movs.dados, itens, categorias: cats.dados, historico: hist.dados, opsMes: opsMes.dados, opsTodas: opsTodas.dados })
+    return ok({ lancamentos: lanc.dados, rendas: rendas.dados, movimentos: movs.dados, itens, categorias: cats.dados, historico: hist.dados, opsMes: opsMes.dados, opsTodas: opsTodas.dados, feriados: feriados.dados })
   }, [mes])
 
   if (carregando) return <Carregando />
@@ -76,7 +78,7 @@ export function Fechamento() {
   const violacoes = dados.opsMes.filter((o) => o.violacao_trava)
   const resultadoViolacoes = violacoes.reduce((s, o) => s + (o.resultado_liquido_centavos ?? 0), 0)
   const resultadoTrade = dados.opsMes.reduce((s, o) => s + (o.resultado_liquido_centavos ?? 0), 0)
-  const irDoMes = apurarIR(mesesDeDayTrade(dados.opsTodas.filter((o) => o.data <= ultimoDiaDoMes(mes)))).find((m) => m.mes === mes)
+  const irDoMes = apurarIR(mesesDeDayTrade(dados.opsTodas.filter((o) => o.data <= ultimoDiaDoMes(mes))), 0, dados.feriados).find((m) => m.mes === mes)
 
   async function aoConfirmar() {
     if (!dados) return

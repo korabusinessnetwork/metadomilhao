@@ -2,9 +2,9 @@ import { inicioDoMes, somarMeses, ultimoDiaUtilDoMes } from './datas'
 
 // IR de day trade (IR-01 a IR-04). Apoio para conferência, não declaração oficial.
 
-/** IR-04: último dia útil do mês seguinte. Feriados nacionais entram com o calendário da Fase 3. */
-export function vencimentoDarf(mes: string): string {
-  return ultimoDiaUtilDoMes(somarMeses(mes, 1))
+/** IR-04: último dia útil do mês seguinte, pulando os feriados nacionais (tabela feriado_b3, nacional = true). */
+export function vencimentoDarf(mes: string, feriadosNacionais: string[] = []): string {
+  return ultimoDiaUtilDoMes(somarMeses(mes, 1), feriadosNacionais)
 }
 
 export interface MesDayTrade {
@@ -44,7 +44,7 @@ const ALIQUOTA = 0.2
 const ALIQUOTA_IRRF = 0.01
 
 /** Meses em ordem cronológica. O prejuízo e o IRRF que sobram passam para os meses seguintes. */
-export function apurarIR(meses: MesDayTrade[], prejuizoInicialCentavos = 0): ApuracaoMes[] {
+export function apurarIR(meses: MesDayTrade[], prejuizoInicialCentavos = 0, feriadosNacionais: string[] = []): ApuracaoMes[] {
   let prejuizo = prejuizoInicialCentavos
   let irrfSobra = 0
   return meses.map((m) => {
@@ -74,7 +74,7 @@ export function apurarIR(meses: MesDayTrade[], prejuizoInicialCentavos = 0): Apu
       impostoDevidoCentavos: impostoDevido,
       prejuizoAcumuladoCentavos: prejuizo,
       irrfSobraCentavos: irrfSobra,
-      vencimento: vencimentoDarf(m.mes),
+      vencimento: vencimentoDarf(m.mes, feriadosNacionais),
     }
   })
 }

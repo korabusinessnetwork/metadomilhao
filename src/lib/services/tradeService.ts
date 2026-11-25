@@ -6,7 +6,7 @@ import { executar, falha, ok, type Resultado } from './resultado'
 
 const CAMPOS_PARAMETROS = 'id, vigente_desde, risco_operacao_centavos, stop_gain_r, stop_loss_dia_r, pct_perda_dia, pct_perda_semana, pct_perda_mes, aumento_risco'
 const CAMPOS_SETUP = 'id, nome, descricao, ativo'
-const CAMPOS_OPERACAO = 'id, data, aberta_em, fechada_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, preco_saida, risco_centavos, resultado_bruto_centavos, custos_centavos, resultado_liquido_centavos, resultado_r, setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia, noticia_descricao, seguiu_plano, observacao, violacao_trava'
+const CAMPOS_OPERACAO = 'id, data, aberta_em, fechada_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, preco_saida, risco_centavos, resultado_bruto_centavos, custos_centavos, resultado_liquido_centavos, resultado_r, setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia, noticia_descricao, seguiu_plano, observacao, violacao_trava, revisao_noticias_id'
 const CAMPOS_STATUS = 'data, aberto, motivo, reabre_em, meta_dia_centavos, perda_dia_centavos, perda_semana_centavos, perda_mes_centavos, resultado_dia_centavos, resultado_semana_centavos, resultado_mes_centavos, capital_inicio_dia_centavos, risco_operacao_centavos'
 
 // numeric chega como texto do PostgREST; a lógica usa number
@@ -75,7 +75,7 @@ export async function listarTodasFechadas(): Promise<Resultado<Operacao[]>> {
   return ok(r.dados.map(normalizarOperacao))
 }
 
-function linhaDaOperacao(p: Omit<PlanoOperacao, 'capitalCentavos'> & { ativo: string }) {
+function linhaDaOperacao(p: Omit<PlanoOperacao, 'capitalCentavos'> & { ativo: string; revisaoNoticiasId?: string | null }) {
   return {
     aberta_em: new Date().toISOString(),
     ativo: p.ativo.trim().toUpperCase(),
@@ -95,11 +95,12 @@ function linhaDaOperacao(p: Omit<PlanoOperacao, 'capitalCentavos'> & { ativo: st
     timeframe_entrada: p.timeframeEntrada,
     teve_noticia: p.teveNoticia,
     noticia_descricao: p.teveNoticia ? p.noticiaDescricao.trim() : null,
+    revisao_noticias_id: p.revisaoNoticiasId ?? null, // IA-05
   }
 }
 
 /** Registro planejado: passa por T-04 e pela trava no banco (TR-02). */
-export async function registrarOperacao(p: PlanoOperacao & { ativo: string }): Promise<Resultado<null>> {
+export async function registrarOperacao(p: PlanoOperacao & { ativo: string; revisaoNoticiasId?: string | null }): Promise<Resultado<null>> {
   const erros = validarPlanoOperacao(p)
   if (!/^[A-Z0-9]{4,12}$/.test(p.ativo.trim().toUpperCase())) erros.unshift('Código do ativo inválido (ex.: WINZ26, PETR4).')
   if (erros.length > 0) return { dados: null, erro: erros.join(' ') }
@@ -108,7 +109,7 @@ export async function registrarOperacao(p: PlanoOperacao & { ativo: string }): P
 
 /** TR-03: operação já executada com o período fechado. Entra marcada e com a saída. */
 export async function registrarViolacao(
-  p: PlanoOperacao & { ativo: string; saida: number; custosCentavos: number; observacao: string },
+  p: PlanoOperacao & { ativo: string; saida: number; custosCentavos: number; observacao: string; revisaoNoticiasId?: string | null },
 ): Promise<Resultado<null>> {
   const erros = validarPlanoOperacao({ ...p, capitalCentavos: Number.MAX_SAFE_INTEGER }).filter((e) => !e.includes('T-04'))
   if (!(p.saida > 0)) erros.push('Informe o preço de saída.')

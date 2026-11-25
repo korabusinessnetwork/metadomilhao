@@ -6,6 +6,7 @@ import { dataEmSaoPaulo } from '../../lib/calculos/datas'
 import { paraPreco, resultadoBrutoCentavos } from '../../lib/calculos/trade'
 import { paraCentavos } from '../../lib/calculos/dinheiro'
 import { ok } from '../../lib/services/resultado'
+import { revisaoDoDia } from '../../lib/services/noticiasService'
 import type { Operacao, Setup } from '../../lib/tipos'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, EstadoVazio } from '../../componentes/Basicos'
 import { FaixaTrava } from './FaixaTrava'
@@ -16,12 +17,13 @@ import './trade.css'
 export function Trade() {
   const hoje = dataEmSaoPaulo()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [status, setups, ops, nota] = await Promise.all([statusHoje(), listarSetups(), listarOperacoes(hoje, hoje), obterNotaDoDia(hoje)])
+    const [status, setups, ops, nota, revisao] = await Promise.all([statusHoje(), listarSetups(), listarOperacoes(hoje, hoje), obterNotaDoDia(hoje), revisaoDoDia(hoje)])
+    if (revisao.erro !== null) return revisao
     if (status.erro !== null) return status
     if (setups.erro !== null) return setups
     if (ops.erro !== null) return ops
     if (nota.erro !== null) return nota
-    return ok({ status: status.dados, setups: setups.dados, ops: ops.dados, nota: nota.dados })
+    return ok({ status: status.dados, setups: setups.dados, ops: ops.dados, nota: nota.dados, revisaoId: revisao.dados?.status === 'ok' ? revisao.dados.id : null })
   }, [hoje])
   const [mensagem, setMensagem] = useState<{ tipo: 'erro' | 'sucesso'; texto: string } | null>(null)
   const [mostrarViolacao, setMostrarViolacao] = useState(false)
@@ -61,6 +63,7 @@ export function Trade() {
       <div className="cabecalho-tela">
         <h1>Trade</h1>
         <div className="acoes" style={{ marginTop: 0 }}>
+          <Link className="botao secundario" to="/noticias">Notícias</Link>
           <Link className="botao secundario" to="/trade/estatisticas">Estatísticas</Link>
           <Link className="botao secundario" to="/trade/ir">IR</Link>
           <Link className="botao secundario" to="/trade/configurar">Configurar</Link>
@@ -102,7 +105,7 @@ export function Trade() {
       <div className="trade-colunas">
         <div>
           {s.aberto ? (
-            <FormularioOperacao modo="planejada" setups={dados.setups} capitalCentavos={s.capital_inicio_dia_centavos} aoSalvar={sucesso} />
+            <FormularioOperacao modo="planejada" setups={dados.setups} capitalCentavos={s.capital_inicio_dia_centavos} revisaoHojeId={dados.revisaoId} aoSalvar={sucesso} />
           ) : (
             <section className="painel">
               <p>O formulário de operação está bloqueado até a reabertura.</p>
@@ -113,7 +116,7 @@ export function Trade() {
               )}
             </section>
           )}
-          {!s.aberto && mostrarViolacao && <FormularioOperacao modo="violacao" setups={dados.setups} capitalCentavos={s.capital_inicio_dia_centavos} aoSalvar={sucesso} />}
+          {!s.aberto && mostrarViolacao && <FormularioOperacao modo="violacao" setups={dados.setups} capitalCentavos={s.capital_inicio_dia_centavos} revisaoHojeId={dados.revisaoId} aoSalvar={sucesso} />}
         </div>
 
         <div>

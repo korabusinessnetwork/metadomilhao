@@ -5,6 +5,7 @@ import { listarPagamentosIR, listarTodasFechadas, registrarPagamentoIR, removerP
 import { apurarIR, mesesDeDayTrade } from '../../lib/calculos/ir'
 import { dataEmSaoPaulo, inicioDoMes } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
+import { feriadosNacionais } from '../../lib/services/noticiasService'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, EstadoVazio } from '../../componentes/Basicos'
 
 const nomeDoMes = (mes: string) => new Date(`${mes}T12:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
@@ -12,17 +13,18 @@ const nomeDoMes = (mes: string) => new Date(`${mes}T12:00:00`).toLocaleDateStrin
 /** IR-01 a IR-04: apuração mensal e DARF estimado. Apoio, não declaração oficial. */
 export function IR() {
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [ops, pagos] = await Promise.all([listarTodasFechadas(), listarPagamentosIR()])
+    const [ops, pagos, feriados] = await Promise.all([listarTodasFechadas(), listarPagamentosIR(), feriadosNacionais()])
     if (ops.erro !== null) return ops
     if (pagos.erro !== null) return pagos
-    return ok({ ops: ops.dados, pagos: pagos.dados })
+    if (feriados.erro !== null) return feriados
+    return ok({ ops: ops.dados, pagos: pagos.dados, feriados: feriados.dados })
   }, [])
   const [mensagem, setMensagem] = useState<{ tipo: 'erro' | 'sucesso'; texto: string } | null>(null)
 
   if (carregando) return <Carregando />
   if (erro || !dados) return <ErroComAcao erro={erro ?? ''} tentarDeNovo={recarregar} />
 
-  const apuracao = apurarIR(mesesDeDayTrade(dados.ops)).reverse()
+  const apuracao = apurarIR(mesesDeDayTrade(dados.ops), 0, dados.feriados).reverse()
   const mesAtual = inicioDoMes(dataEmSaoPaulo())
 
   return (
@@ -103,7 +105,7 @@ export function IR() {
               })}
             </tbody>
           </table>
-          <p className="pequeno mut">O mês corrente ainda pode mudar. Vencimento no último dia útil do mês seguinte (IR-04); feriados nacionais ainda não são considerados.</p>
+          <p className="pequeno mut">O mês corrente ainda pode mudar. Vencimento no último dia útil do mês seguinte, pulando os feriados nacionais do calendário (IR-04).</p>
         </section>
       )}
     </>

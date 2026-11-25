@@ -39,11 +39,14 @@ export function FormularioOperacao({
   modo,
   setups,
   capitalCentavos,
+  revisaoHojeId,
   aoSalvar,
 }: {
   modo: 'planejada' | 'violacao'
   setups: Setup[]
   capitalCentavos: number
+  /** IA-05: revisão de notícias ok de hoje, se houver */
+  revisaoHojeId: string | null
   aoSalvar: (texto: string) => void
 }) {
   const [ativo, setAtivo] = useState('')
@@ -64,6 +67,7 @@ export function FormularioOperacao({
   const [noticia, setNoticia] = useState('')
   const [observacao, setObservacao] = useState('')
   const [confirmado, setConfirmado] = useState(false)
+  const [vincularRevisao, setVincularRevisao] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
 
@@ -77,7 +81,7 @@ export function FormularioOperacao({
   async function aoEnviar(e: FormEvent) {
     e.preventDefault()
     if (!direcao) return setErro('Escolha compra ou venda.')
-    const plano: PlanoOperacao & { ativo: string } = {
+    const plano: PlanoOperacao & { ativo: string; revisaoNoticiasId: string | null } = {
       ativo,
       mercado,
       direcao,
@@ -93,6 +97,7 @@ export function FormularioOperacao({
       timeframeEntrada: timeframe,
       teveNoticia,
       noticiaDescricao: noticia,
+      revisaoNoticiasId: revisaoHojeId && vincularRevisao ? revisaoHojeId : null,
     }
     setEnviando(true)
     setErro(null)
@@ -179,6 +184,12 @@ export function FormularioOperacao({
         <input type="checkbox" checked={teveNoticia} onChange={(e) => setTeveNoticia(e.target.checked)} />
         Teve notícia relevante
       </label>
+      {revisaoHojeId && (
+        <label className="marcar">
+          <input type="checkbox" checked={vincularRevisao} onChange={(e) => setVincularRevisao(e.target.checked)} />
+          Li a revisão de notícias de hoje (vincular à operação)
+        </label>
+      )}
       {teveNoticia && (
         <div className="campo">
           <label htmlFor={`${modo}-noticia`}>Qual notícia</label>

@@ -36,6 +36,21 @@ npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento, O-02,
 npm run build       # typecheck + build do PWA
 ```
 
+## Publicar (Supabase Free + Vercel Hobby, custo zero)
+
+1. **Supabase:** criar um projeto Free (região São Paulo). Depois, na pasta do projeto:
+   ```bash
+   supabase login
+   supabase link --project-ref <ref-do-projeto>
+   supabase db push            # aplica as migrations de supabase/migrations
+   ```
+2. **Auth, no painel do Supabase:** desligar "Allow new users to sign up"; senha mínima de 12 com letras, números e símbolos; ligar MFA TOTP. Criar a conta do dono em Authentication, Users, Add user. No primeiro acesso o app pede o segundo fator.
+3. **Vercel:** importar o repositório do GitHub (o `vercel.json` já traz build, reescrita de rotas e cabeçalhos de segurança). Em Environment Variables, só `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (Project Settings, API, no Supabase). Nunca a service_role.
+4. **Revisão de notícias:** ver "Revisão de notícias" acima (secrets, deploy da função e `supabase/agendamento.sql`). Trocar `ORIGEM_APP` pela URL da Vercel.
+5. **Conferir antes de publicar:** `npm run build && node scripts/servir-como-vercel.mjs 5182 http://127.0.0.1:55321` serve o build com os mesmos cabeçalhos; o console do navegador não deve mostrar bloqueio de CSP.
+
+Se trocar o domínio do Supabase por um próprio, inclua-o no `connect-src` do `vercel.json`.
+
 ## Por onde começar
 
 1. `CLAUDE.md`: a constituição (princípios, segurança, custo, stack).

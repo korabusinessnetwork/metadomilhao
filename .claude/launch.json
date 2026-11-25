@@ -25,6 +25,16 @@
         "--strictPort"
       ],
       "port": 5181
+    },
+    {
+      "name": "rota-do-milhao-vercel",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/servir-como-vercel.mjs",
+        "5182",
+        "http://127.0.0.1:55321"
+      ],
+      "port": 5182
     }
   ]
 }

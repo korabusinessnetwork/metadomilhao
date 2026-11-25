@@ -2,8 +2,11 @@ import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarregar } from '../../lib/useCarregar'
 import { carregarDadosDoMes, calcularLimite } from '../dadosDoMes'
-import { registrar } from '../../lib/services/lancamentoService'
-import { listarPeriodo } from '../../lib/services/lancamentoService'
+import { enviarPendente, listarPeriodo } from '../../lib/services/lancamentoService'
+import { validarLancamento } from '../../lib/calculos/orcamento'
+import { avisarFilaMudou, fila, novoId } from '../../lib/offline/aparelho'
+import { mesclarPendentes } from '../../lib/offline/mesclar'
+import type { LancamentoPendente } from '../../lib/offline/fila'
 import { somarMeses, dataEmSaoPaulo, inicioDoMes } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
 import { CampoValor, SeletorCategoria } from '../../componentes/Campos'
@@ -17,8 +20,8 @@ export function NovoLancamento() {
     const hoje = dataEmSaoPaulo()
     const [mes, recentes] = await Promise.all([carregarDadosDoMes(), listarPeriodo(somarMeses(inicioDoMes(hoje), -2), somarMeses(inicioDoMes(hoje), 1))])
     if (mes.erro !== null) return mes
-    if (recentes.erro !== null) return recentes
-    return ok({ mes: mes.dados, recentes: recentes.dados })
+    // As "mais usadas" são conveniência: sem conexão, a tela abre sem elas
+    return ok({ mes: mes.dados, recentes: recentes.dados ?? [] })
   }, [])
 
   const [valor, setValor] = useState<number | null>(null)
@@ -28,7 +31,7 @@ export function NovoLancamento() {
   const [mostrarDetalhes, setMostrarDetalhes] = useState(false)
   const [erroEnvio, setErroEnvio] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
-  const [salvo, setSalvo] = useState<{ restante: number } | null>(null)
+  const [salvo, setSalvo] = useState<{ restante: number; naFila: boolean } | null>(null)
 
   const maisUsadas = useMemo(() => {
     const contagem = new Map<string, number>()
@@ -48,18 +51,24 @@ export function NovoLancamento() {
       setErroEnvio('Digite o valor.')
       return
     }
+    const erros = validarLancamento({ data, categoriaId, valorCentavos: valor })
+    if (erros.length > 0) return setErroEnvio(erros.join(' '))
     setEnviando(true)
     setErroEnvio(null)
-    const r = await registrar({ data, categoriaId, valorCentavos: valor, descricao })
+    // O id nasce no aparelho: se a rede cair no meio, reenviar não duplica
+    const pendente: LancamentoPendente = { id: novoId(), data, categoriaId, valorCentavos: valor, descricao, criadoEm: new Date().toISOString() }
+    const r = await enviarPendente(pendente)
     setEnviando(false)
-    if (r.erro !== null) {
-      setErroEnvio(r.erro)
-      return
+    if (typeof r === 'object') return setErroEnvio(r.recusado)
+    const naFila = r === 'sem_conexao'
+    if (naFila) {
+      fila.adicionar(pendente)
+      avisarFilaMudou()
     }
-    // O limite do dia se atualiza na hora
-    const lancamentos = r.dados.data.startsWith(dados.mes.mes.slice(0, 7)) ? [r.dados, ...dados.mes.lancamentos] : dados.mes.lancamentos
+    // O limite do dia se atualiza na hora, contando o que ainda está na fila
+    const lancamentos = mesclarPendentes(dados.mes.lancamentos.filter((l) => !l.pendente), [...fila.pendentes(), ...(naFila ? [] : [pendente])], dados.mes.mes)
     const limite = calcularLimite(dados.mes.hoje, dados.mes.orcamento, dados.mes.categorias, lancamentos)
-    setSalvo({ restante: limite.restanteHojeCentavos })
+    setSalvo({ restante: limite.restanteHojeCentavos, naFila })
     dados.mes.lancamentos = lancamentos
     setValor(null)
     setDescricao('')
@@ -69,7 +78,8 @@ export function NovoLancamento() {
   if (salvo)
     return (
       <section className="painel">
-        <h1>Gasto salvo</h1>
+        <h1>{salvo.naFila ? 'Gasto guardado no aparelho' : 'Gasto salvo'}</h1>
+        {salvo.naFila && <Aviso>Sem conexão agora. Ele sobe sozinho quando a internet voltar e já conta no limite de hoje.</Aviso>}
         <p>
           Restante de hoje: <Dinheiro centavos={salvo.restante} className={salvo.restante < 0 ? 'bad' : ''} />
         </p>

@@ -2,7 +2,7 @@
 
 Sistema financeiro pessoal do Matheus: orçamento, metas diárias, mensais e anuais, plano até o primeiro milhão, carteira de investimentos e diário detalhado de day trade com revisão de notícias por IA antes do pregão.
 
-**Estado:** Fases 1 (MVP financeiro), 2 (diário de trade) e 3 (revisão de notícias por IA) construídas e testadas no ambiente local. Falta publicar (Supabase na nuvem + Vercel) e ligar a chave da API do Claude.
+**Estado:** Fases 1 (MVP financeiro), 2 (diário de trade) e 3 (revisão de notícias por IA) construídas e testadas no ambiente local, mais a fila offline de gastos da Fase 4. Falta publicar (Supabase na nuvem + Vercel) e ligar a chave da API do Claude.
 **Início da sistemática:** depois da mudança de moradia, prevista para fevereiro de 2027.
 
 ## Rodar localmente

@@ -3,6 +3,8 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { obterPerfil, obterPlano } from '../lib/services/perfilService'
 import type { Perfil, PlanoMilhao } from '../lib/tipos'
+import { cache, fila } from '../lib/offline/aparelho'
+import { MENSAGEM_SEM_CONEXAO } from '../lib/services/resultado'
 
 /**
  * Estados da sessão:
@@ -44,11 +46,21 @@ export function ProvedorSessao({ children }: { children: ReactNode }) {
       return
     }
     const [p, pl] = await Promise.all([obterPerfil(), obterPlano()])
-    if (p.erro || pl.erro) {
+    if (p.erro !== null || pl.erro !== null) {
+      // Sem conexão: abre com o último perfil bom guardado no aparelho (fila offline, Fase 4)
+      const guardado = cache.ler<{ perfil: Perfil; plano: PlanoMilhao }>(`sessao:${s.user.id}`)
+      if ((p.erro ?? pl.erro) === MENSAGEM_SEM_CONEXAO && guardado) {
+        setPerfil(guardado.perfil)
+        setPlano(guardado.plano)
+        setErro(null)
+        setEstado('pronta')
+        return
+      }
       setErro(p.erro ?? pl.erro)
       setEstado('erro')
       return
     }
+    if (p.dados && pl.dados) cache.gravar(`sessao:${s.user.id}`, { perfil: p.dados, plano: pl.dados })
     setPerfil(p.dados)
     setPlano(pl.dados)
     setErro(null)
@@ -70,6 +82,11 @@ export function ProvedorSessao({ children }: { children: ReactNode }) {
   }, [avaliar])
 
   const sair = useCallback(async () => {
+    const naoEnviados = fila.pendentes().length
+    if (naoEnviados > 0 && !window.confirm(`${naoEnviados} gasto(s) ainda não foram enviados e serão perdidos ao sair. Sair mesmo assim?`)) return
+    // Nada financeiro fica no aparelho depois de sair
+    fila.limpar()
+    cache.limpar()
     await supabase.auth.signOut()
     setPerfil(null)
     setPlano(null)

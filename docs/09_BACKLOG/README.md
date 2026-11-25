@@ -41,9 +41,9 @@
 - [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem
 
 ## Fase 4, Integrações
-- [ ] Importar operações do MT5
-- [ ] Receber operações do KORA TRADER
-- [ ] Fila offline de lançamentos
+- [ ] Importar operações do MT5 (aguardando um relatório exportado de exemplo)
+- [ ] Receber operações do KORA TRADER (aguardando o formato e onde ele roda)
+- [x] Fila offline de lançamentos: gasto sem internet fica no aparelho, sobe sozinho, não duplica, recusa fica visível
 
 ## Ideias (não priorizadas)
 - Notificação ao bater 80% do orçamento de uma categoria

@@ -15,12 +15,15 @@ const MENSAGENS: Record<string, string> = {
   PGRST301: 'Sua sessão expirou. Entre de novo.',
 }
 
+export const MENSAGEM_SEM_CONEXAO = 'Sem conexão. Confira a internet e tente de novo.'
+
 export function traduzirErro(erro: ErroBanco | null | undefined): string {
   if (!erro) return 'Algo deu errado. Tente de novo.'
   // P0001: mensagens escritas por nós nos triggers, já em português e sem dados sensíveis
   if (erro.code === 'P0001' && erro.message) return erro.message
   if (erro.code && MENSAGENS[erro.code]) return MENSAGENS[erro.code]!
-  if (erro.message?.includes('Failed to fetch')) return 'Sem conexão. Confira a internet e tente de novo.'
+  // Chrome, Firefox e Safari usam textos diferentes para a mesma falha de rede
+  if (/failed to fetch|networkerror|load failed|network request failed/i.test(erro.message ?? '')) return MENSAGEM_SEM_CONEXAO
   return 'Algo deu errado. Tente de novo.'
 }
 

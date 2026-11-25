@@ -3,6 +3,8 @@ import { validarLancamento } from '../calculos/orcamento'
 import { supabase } from '../supabase'
 import type { FonteRenda, Lancamento, Renda } from '../tipos'
 import { executar, type Resultado } from './resultado'
+import { classificarEnvio } from '../offline/envio'
+import type { LancamentoPendente, ResultadoEnvio } from '../offline/fila'
 
 const CAMPOS_LANCAMENTO = 'id, data, categoria_id, valor_centavos, descricao, estorno_de, criado_em'
 const CAMPOS_RENDA = 'id, mes, fonte, valor_centavos, recebido_em'
@@ -28,6 +30,18 @@ export async function registrar(l: { data: string; categoriaId: string; valorCen
       .select(CAMPOS_LANCAMENTO)
       .single(),
   )
+}
+
+/** Envio de um lançamento da fila offline. O id vem do aparelho, então reenviar não duplica. */
+export async function enviarPendente(l: LancamentoPendente): Promise<ResultadoEnvio> {
+  try {
+    const { error } = await supabase
+      .from('lancamento')
+      .insert({ id: l.id, data: l.data, categoria_id: l.categoriaId, valor_centavos: l.valorCentavos, descricao: l.descricao.trim() || null })
+    return classificarEnvio(error)
+  } catch (e) {
+    return classificarEnvio({ message: e instanceof Error ? e.message : 'Failed to fetch' })
+  }
 }
 
 /** O-05: estorno é um lançamento negativo vinculado, nunca edição do original. */

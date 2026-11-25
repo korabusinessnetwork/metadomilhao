@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import '../estilos/layout.css'
+import { Sincronizacao } from './Sincronizacao'
 
 const classe = ({ isActive }: { isActive: boolean }) => (isActive ? 'ativo' : '')
 
@@ -30,6 +31,7 @@ export function Layout() {
         </NavLink>
       </nav>
       <main className="conteudo">
+        <Sincronizacao />
         <Outlet />
       </main>
     </div>

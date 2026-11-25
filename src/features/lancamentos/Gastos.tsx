@@ -121,12 +121,13 @@ export function Gastos() {
                           {dados.categorias.find((c) => c.id === l.categoria_id)?.nome}
                           {l.descricao && <div className="mut pequeno">{l.descricao}</div>}
                           {estornado && <div className="mut pequeno">Estornado</div>}
+                          {l.pendente && <div className="warn pequeno">Aguardando envio</div>}
                         </td>
                         <td className="num">
                           <Dinheiro centavos={l.valor_centavos} semantico={l.valor_centavos < 0} />
                         </td>
                         <td className="direita">
-                          {!l.estorno_de && !estornado && (
+                          {!l.estorno_de && !estornado && !l.pendente && (
                             <button type="button" className="botao perigo" onClick={() => aoEstornar(l)}>
                               Estornar
                             </button>

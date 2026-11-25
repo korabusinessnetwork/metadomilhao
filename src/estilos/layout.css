@@ -82,3 +82,13 @@
 
 .tela-centro { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
 .cartao-login { width: 100%; max-width: 380px; }
+
+/* Fila offline (Fase 4): aviso fixo enquanto houver algo para enviar ou recusado */
+.aviso-sincronizacao {
+  border-left: 4px solid var(--warn);
+  background: var(--zone);
+  border-radius: var(--raio);
+  padding: 8px 12px;
+  margin-bottom: 16px;
+}
+.aviso-sincronizacao p { margin: 4px 0; }

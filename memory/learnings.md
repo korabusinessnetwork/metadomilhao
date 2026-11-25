@@ -24,5 +24,9 @@
 - **Supabase novo não concede nada nem ao `service_role`.** Toda tabela precisa de `grant` explícito, inclusive para a Edge Function.
 - **Roteiro de teste mexe só no que é dele.** O primeiro roteiro apagava revisões de todos e quebrou quando uma operação real passou a referenciar uma.
 
+## Da Fase 4 (25/11/2026)
+- **Hipótese errada se descarta com dado.** A primeira suspeita da demora offline era a renovação do token; o log de rede mostrou que eram as leituras repetidas pela biblioteca.
+- **Atualizar dependência muda comportamento sem avisar.** A retentativa automática do PostgREST veio de fábrica na versão nova do cliente.
+
 ## Formato
 Cada aprendizado novo: data, o que aconteceu, o que muda no sistema (regra, ADR ou backlog).

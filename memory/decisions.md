@@ -51,6 +51,14 @@
 - **Agendamento fora das migrations:** `supabase/agendamento.sql` guarda URL e segredo no Vault, por ambiente.
 - **Calendário:** `feriado_b3` com `nacional` (vale para o DARF) e `confirmado` (conferido com a B3). As travas reabrem no próximo dia de pregão.
 
+## Decisões da Fase 4 (2026-11-25)
+- **Fila offline só para gastos.** Lançamento sem conexão vai para `localStorage` com id gerado no aparelho (`crypto.randomUUID`). Reenviar não duplica: o banco recusa o id repetido (23505) e a fila trata como enviado.
+- **Recusa nunca some:** gasto que o banco recusa por regra vai para "recusados", visível até o dono descartar.
+- **Pendentes contam nos números:** o limite do dia e o gasto do mês somam o que está na fila, marcado como "aguardando envio".
+- **Cache no aparelho:** o último perfil, plano e dados do mês ficam no `localStorage` para o app abrir sem internet. Sair da conta apaga cache e fila (com aviso se houver gasto não enviado).
+- **Sem retentativa automática do Supabase (`db.retry: false`):** ver BUG-007.
+- **Trade, orçamento e carteira continuam exigindo conexão:** travas e regras rodam no banco, então não faz sentido aceitar operação offline.
+
 ## Em aberto
 - P-03 com mês fechado de gasto zero zera a meta da reserva. Decidir se mês sem gasto entra na média.
 - Regra exata de meta de lucro diária (M-10) a validar após 30 dias de operação real.

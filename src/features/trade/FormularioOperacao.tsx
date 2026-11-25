@@ -5,7 +5,7 @@ import { paraCentavos } from '../../lib/calculos/dinheiro'
 import type { Setup } from '../../lib/tipos'
 import { Aviso, Dinheiro } from '../../componentes/Basicos'
 
-function Opcoes<T extends string>({ rotulo, valor, opcoes, aoMudar }: { rotulo: string; valor: T | ''; opcoes: [T, string][]; aoMudar: (v: T) => void }) {
+export function Opcoes<T extends string>({ rotulo, valor, opcoes, aoMudar }: { rotulo: string; valor: T | ''; opcoes: [T, string][]; aoMudar: (v: T) => void }) {
   return (
     <div className="grupo-campo" role="group" aria-label={rotulo}>
       <span>{rotulo}</span>
@@ -20,9 +20,9 @@ function Opcoes<T extends string>({ rotulo, valor, opcoes, aoMudar }: { rotulo: 
   )
 }
 
-const TENDENCIAS: [Tendencia, string][] = [['alta', 'Alta'], ['baixa', 'Baixa'], ['lateral', 'Lateral']]
+export const TENDENCIAS: [Tendencia, string][] = [['alta', 'Alta'], ['baixa', 'Baixa'], ['lateral', 'Lateral']]
 
-function Preco({ id, rotulo, texto, aoMudar }: { id: string; rotulo: string; texto: string; aoMudar: (t: string) => void }) {
+export function Preco({ id, rotulo, texto, aoMudar }: { id: string; rotulo: string; texto: string; aoMudar: (t: string) => void }) {
   return (
     <div className="campo">
       <label htmlFor={id}>{rotulo}</label>

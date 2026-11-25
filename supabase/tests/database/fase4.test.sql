@@ -100,6 +100,17 @@ select throws_ok($$ update public.importacao_mt5 set status = 'rascunho' where t
 insert into public.importacao_mt5 (id, ticket, linha, dados) values ('80000000-0000-0000-0000-000000000006', '1006', 9, '{}');
 select throws_ok($$ update public.importacao_mt5 set status = 'confirmada' where ticket = '1006' $$, 'P0001', 'Só dá para descartar um rascunho.', 'o dono não marca confirmada por conta própria');
 select throws_ok($$ update public.importacao_mt5 set dados = '{"precoSaida": 999999}' where ticket = '1006' $$, 'P0001', 'Só dá para descartar um rascunho.', 'o dono não edita os dados do relatório');
+-- D07: histórico de antes da primeira configuração de limites entra sem violação (não havia trava vigente)
+insert into public.importacao_mt5 (id, ticket, linha, dados) values
+  ('80000000-0000-0000-0000-000000000007', '1007', 10, pg_temp.posicao('1007', '2019-06-03T10:00:00-03:00', '2019-06-03T10:10:00-03:00', 128500, 128450));
+select lives_ok($$ select public.confirmar_importacao_mt5('80000000-0000-0000-0000-000000000007', pg_temp.contexto()) $$, 'D07: importa operação de antes da configuração dos limites');
+select is((select violacao_trava from public.operacao where aberta_em = '2019-06-03T10:00:00-03:00'), false, 'D07: sem trava vigente naquela data, não é violação');
+-- O registro manual continua exigindo a configuração
+select throws_ok($$
+  insert into public.operacao (aberta_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, multiplicador, risco_centavos,
+    setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia)
+  values ('2019-06-03T11:00:00-03:00', 'WINJ27', 'mini_indice', 'compra', 1, 128500, 128450, 128600, 1, 1, (select id from public.setup limit 1), 'alta', 'alta', 'alta', '5m', false) $$,
+  'P0001', 'Defina o risco por operação antes de registrar.', 'o registro manual continua exigindo os limites');
 select pg_temp.sair();
 select pg_temp.entrar('00000000-0000-0000-0000-0000000000b2');
 

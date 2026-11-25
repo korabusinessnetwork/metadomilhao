@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { decodificarRelatorio, lerRelatorioMt5 } from './mt5'
+import { conferirLucro, decodificarRelatorio, lerRelatorioMt5 } from './mt5'
 
 // Relatório no formato do MT5 (Histórico, Relatório, HTML): título da seção numa linha, cabeçalho, posições, outra seção.
 const relatorioIngles = `<html><body><table>
@@ -21,6 +21,18 @@ const relatorioPortugues = `<html><body><table>
 <tr><td colspan="13"><b>Transações</b></td></tr>
 <tr><td>Saldo:</td><td>1 000.00</td></tr>
 </table></body></html>`
+
+describe('conferência do lucro do MT5', () => {
+  it('bate quando o lucro do relatório é o calculado pelos preços e pelo multiplicador (T-03)', () => {
+    const r = lerRelatorioMt5(relatorioIngles)
+    expect(conferirLucro(r.posicoes[0]!)).toEqual({ calculadoCentavos: 4000, diferencaCentavos: 0 })
+  })
+
+  it('aponta a diferença quando não bate (ex.: contrato com multiplicador diferente)', () => {
+    const p = { ...lerRelatorioMt5(relatorioIngles).posicoes[0]!, lucroBrutoCentavos: 20000 }
+    expect(conferirLucro(p)).toEqual({ calculadoCentavos: 4000, diferencaCentavos: 16000 })
+  })
+})
 
 describe('relatório de histórico do MT5', () => {
   it('lê as posições em inglês: ativo, direção, volume, preços, S/L, T/P, horários, custos e lucro', () => {

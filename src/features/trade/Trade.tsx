@@ -64,6 +64,7 @@ export function Trade() {
         <h1>Trade</h1>
         <div className="acoes" style={{ marginTop: 0 }}>
           <Link className="botao secundario" to="/noticias">Notícias</Link>
+          <Link className="botao secundario" to="/trade/importar">Importar MT5</Link>
           <Link className="botao secundario" to="/trade/estatisticas">Estatísticas</Link>
           <Link className="botao secundario" to="/trade/ir">IR</Link>
           <Link className="botao secundario" to="/trade/configurar">Configurar</Link>

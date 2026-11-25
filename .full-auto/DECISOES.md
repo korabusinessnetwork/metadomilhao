@@ -38,3 +38,9 @@ Decisões de produto e de arquitetura anteriores a este modo estão em `memory/d
 - **Decisão:** a regra fica como está escrita (média dos 3 últimos meses fechados). A tela já mostra "Sem meta ainda" quando a meta dá zero, em vez de "reserva completa".
 - **Por quê:** mudar a regra de negócio é decisão do dono; o risco de enganar já está coberto pela tela.
 - **Como reverter:** ajustar `metaReserva` em `src/lib/calculos/reserva.ts` e `meta_reserva` no banco.
+
+## D07 Importação de antes da configuração dos limites
+- **Contexto:** testando a tela, o relatório trouxe operações de 23 e 24/11 e os limites foram configurados em 25/11. O banco recusava com "Defina o risco por operação".
+- **Decisão:** operação importada com data anterior à primeira configuração de limites entra sem violação, porque não havia trava vigente. O registro manual continua exigindo a configuração.
+- **Por quê:** importar o histórico depois de configurar o sistema é o uso normal; recusar perderia dado real, e marcar violação mentiria (não havia limite).
+- **Como reverter:** migration `20261125000007_importacao_antes_dos_limites.sql`.

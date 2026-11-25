@@ -19,6 +19,7 @@ import { ConfigurarTrade } from '../features/trade/ConfigurarTrade'
 import { Estatisticas } from '../features/trade/Estatisticas'
 import { IR } from '../features/trade/IR'
 import { Noticias } from '../features/noticias/Noticias'
+import { ImportarMt5 } from '../features/trade/ImportarMt5'
 
 /** Rota protegida: só renderiza o app depois da sessão, do segundo fator e do perfil (docs/11_SEGURANCA). */
 function Portao() {
@@ -39,6 +40,7 @@ function Portao() {
         <Route path="trade/configurar" element={<ConfigurarTrade />} />
         <Route path="trade/estatisticas" element={<Estatisticas />} />
         <Route path="trade/ir" element={<IR />} />
+        <Route path="trade/importar" element={<ImportarMt5 />} />
         <Route path="noticias" element={<Noticias />} />
         <Route path="mais" element={<Mais />} />
         <Route path="patrimonio" element={<Patrimonio />} />

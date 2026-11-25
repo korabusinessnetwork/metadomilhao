@@ -1,7 +1,7 @@
 // Leitura do relatório de histórico do MT5 salvo em HTML (aba Histórico, Relatório, HTML). Spec: specs/mt5-parser.md.
 // Função pura, sem DOM. Lê só a seção de posições; o que não entende vira aviso, nunca some calado.
 import { dataValida } from '../calculos/datas'
-import type { Direcao } from '../calculos/trade'
+import { mercadoDoAtivo, resultadoBrutoCentavos, type Direcao } from '../calculos/trade'
 
 export interface PosicaoMt5 {
   /** Número da linha (<tr>) no relatório, para o aviso e para a tela apontarem o lugar certo */
@@ -174,4 +174,19 @@ export function lerRelatorioMt5(html: string): LeituraMt5 {
     })
   }
   return { posicoes, avisos }
+}
+
+/**
+ * Confere o lucro que o MT5 informa com o calculado pelos preços e pelo multiplicador do mercado (T-03).
+ * Diferença indica contrato com multiplicador diferente do esperado: a tela avisa antes de confirmar.
+ */
+export function conferirLucro(p: PosicaoMt5): { calculadoCentavos: number; diferencaCentavos: number } {
+  const calculadoCentavos = resultadoBrutoCentavos({
+    mercado: mercadoDoAtivo(p.ativo),
+    direcao: p.direcao,
+    entrada: p.precoEntrada,
+    saida: p.precoSaida,
+    quantidade: p.volume,
+  })
+  return { calculadoCentavos, diferencaCentavos: p.lucroBrutoCentavos - calculadoCentavos }
 }

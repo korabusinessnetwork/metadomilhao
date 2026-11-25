@@ -8,9 +8,9 @@ status: EXECUTANDO
 - **Branch:** full-auto/rota-do-milhao
 - **Início:** 2026-11-25
 - **Fase atual:** Fase A, importação do MT5
-- **Tarefa atual:** T02 rascunhos de importação no banco
-- **Próximo passo:** /ciclo da T02: spec, testes pgTAP (duplicado, ordem, violação, origem mt5 só pela função), migration
-- **Progresso:** 1 de 6 tarefas concluídas
+- **Tarefa atual:** T03 tela de importação
+- **Próximo passo:** /ciclo da T03: spec da tela (serviço, leitura do arquivo, rascunhos, completar contexto, confirmar em ordem), build e teste no navegador com relatório de exemplo
+- **Progresso:** 2 de 6 tarefas concluídas
 
 ## Motivo da parada (só se AGUARDANDO_MATHEUS ou PAUSADO)
 <vazio>

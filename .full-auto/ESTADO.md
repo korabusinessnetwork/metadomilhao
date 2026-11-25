@@ -7,10 +7,10 @@ status: EXECUTANDO
 - **Plano de origem:** `docs/09_BACKLOG/README.md` (o que falta das Fases 1 a 4)
 - **Branch:** full-auto/rota-do-milhao
 - **Início:** 2026-11-25
-- **Fase atual:** Fase A, importação do MT5
-- **Tarefa atual:** T03 tela de importação
-- **Próximo passo:** /ciclo da T03: spec da tela (serviço, leitura do arquivo, rascunhos, completar contexto, confirmar em ordem), build e teste no navegador com relatório de exemplo
-- **Progresso:** 2 de 6 tarefas concluídas
+- **Fase atual:** Fase B, PWA e deploy
+- **Tarefa atual:** T04 PWA offline no build de produção
+- **Próximo passo:** /ciclo da T04: build, vite preview, derrubar o gateway e conferir que a tela de gasto abre pelo service worker
+- **Progresso:** 3 de 6 tarefas concluídas
 
 ## Motivo da parada (só se AGUARDANDO_MATHEUS ou PAUSADO)
 <vazio>

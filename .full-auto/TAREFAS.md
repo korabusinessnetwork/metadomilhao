@@ -11,8 +11,8 @@ O que só o Matheus pode fazer está em `PENDENCIAS-DO-MATHEUS.md`, não aqui.
 - [x] T03 Tela de importação | trilha: mt5 | depende: T02 | pronto quando: no navegador, um relatório de exemplo vira rascunhos, o contexto é completado e a confirmação grava as operações, que aparecem nas estatísticas
 
 ## Fase B: PWA e deploy
-- [~] T04 PWA abre sem internet no build de produção | trilha: pwa | depende: nenhum | pronto quando: com `vite preview` e a API fora do ar, recarregar a tela de gasto abre pelo service worker e o gasto vai para a fila
-- [ ] T05 Projeto pronto para deploy na Vercel | trilha: pwa | depende: T04 | pronto quando: `vercel.json` com reescrita de SPA e cabeçalhos de segurança, rota profunda abre no `vite preview`, README com o passo a passo de publicação
+- [x] T04 PWA abre sem internet no build de produção | trilha: pwa | depende: nenhum | pronto quando: com `vite preview` e a API fora do ar, recarregar a tela de gasto abre pelo service worker e o gasto vai para a fila
+- [~] T05 Projeto pronto para deploy na Vercel | trilha: pwa | depende: T04 | pronto quando: `vercel.json` com reescrita de SPA e cabeçalhos de segurança, rota profunda abre no `vite preview`, README com o passo a passo de publicação
 
 ## Fase C: Encerramento
 - [ ] T06 Verificação final e relatório | trilha: base | depende: todas | pronto quando: instalação limpa, typecheck, testes de cliente, testes de banco, ponta a ponta da IA e fluxo principal no navegador passam, e `RELATORIO-FINAL.md` escrito

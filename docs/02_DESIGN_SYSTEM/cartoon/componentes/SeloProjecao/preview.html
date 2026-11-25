@@ -1,0 +1,46 @@
+<!-- @dsCard group="Plano" height=460 subtitle="Projeção separada de realizado, com premissas" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>SeloProjecao</title>
+<style>.grade{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding:0 6px 6px 0}</style>
+</head>
+<body>
+<div class="rm-pilha">
+  <div class="rm-linha">
+    <span class="rm-selo"><svg class="rm-selo__traco" aria-hidden="true"><rect/></svg>projeção</span>
+    <span class="rm-chip">realizado</span>
+  </div>
+  <div class="grade">
+    <section class="rm-cartao" aria-labelledby="r1">
+      <div class="rm-limite__topo"><h2 class="rm-cartao__titulo" id="r1">Patrimônio hoje</h2><span class="rm-chip">realizado</span></div>
+      <span class="rm-projecao__valor rm-num">R$ 48.210,00</span>
+      <p class="rm-limite__sub" style="margin:0">Soma das contas e investimentos em 25/11/2026.</p>
+    </section>
+    <section class="rm-projecao" aria-labelledby="p1">
+      <div class="rm-limite__topo"><h2 class="rm-cartao__titulo" id="p1">Primeiro milhão</h2><span class="rm-selo"><svg class="rm-selo__traco" aria-hidden="true"><rect/></svg>projeção</span></div>
+      <span class="rm-projecao__valor rm-num">ago/2041</span>
+      <ul class="rm-premissas" aria-label="Premissas">
+        <li>Taxa real <b class="rm-num">4,0% a.a.</b></li>
+        <li>Aporte <b class="rm-num">R$ 1.500/mês</b></li>
+        <li>Início <b class="rm-num">01/2026</b></li>
+        <li>Valores em dinheiro de hoje</li>
+      </ul>
+    </section>
+  </div>
+  <section class="rm-cartao" aria-labelledby="g1" style="margin-right:6px">
+    <h2 class="rm-cartao__titulo" id="g1">Rota até o milhão</h2>
+    <svg class="rm-grafico" viewBox="0 0 600 180" role="img" aria-label="Linha cheia do patrimônio realizado até hoje e linha tracejada da projeção até 2041">
+      <line class="eixo" x1="40" y1="150" x2="580" y2="150"/>
+      <polyline class="realizado" points="40,148 80,146 120,143 160,141"/>
+      <path class="projetado" d="M160 141 C 300 128, 430 85, 570 22"/>
+      <circle class="hoje" cx="160" cy="141" r="7"/>
+      <text x="40" y="172">2026</text>
+      <text x="146" y="126">hoje</text>
+      <text x="530" y="172">2041</text>
+      <text x="420" y="40">projeção</text>
+    </svg>
+    <p class="rm-rotulo" style="margin:8px 0 0">Linha cheia em cobalto: realizado. Linha tracejada em âmbar: projeção com as premissas acima.</p>
+  </section>
+</div>
+</body>
+</html>

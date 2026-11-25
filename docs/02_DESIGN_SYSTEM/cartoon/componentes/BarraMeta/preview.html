@@ -1,0 +1,63 @@
+<!-- @dsCard group="Metas" height=300 subtitle="Enche com mola; moedinha ao bater a meta" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>BarraMeta</title></head>
+<body>
+<section class="rm-cartao rm-meta" id="meta" aria-labelledby="nome" style="margin-right:6px">
+  <div class="rm-meta__topo">
+    <h2 class="rm-meta__nome" id="nome">Reserva de emergência</h2>
+    <span class="rm-meta__pct rm-num" id="pct">74,5%</span>
+  </div>
+  <div class="rm-meta__palco">
+    <div class="rm-meta__trilho" role="progressbar" aria-labelledby="nome" aria-valuemin="0" aria-valuemax="100" aria-valuenow="74.5" id="barra">
+      <div class="rm-meta__enche" id="enche" style="--pct:0%"></div>
+    </div>
+    <div class="rm-moeda" id="moeda" aria-hidden="true" hidden>
+      <svg viewBox="0 0 40 40"><circle class="rm-moeda__corpo" cx="20" cy="20" r="17"/><circle class="rm-moeda__brilho" cx="20" cy="20" r="10"/><path class="rm-moeda__brilho" d="M12 13 L15 10"/></svg>
+    </div>
+  </div>
+  <div class="rm-meta__valores">
+    <span><strong class="rm-num" id="atual">R$ 7.450,00</strong> de <span class="rm-num">R$ 10.000,00</span></span>
+    <span id="estado" class="rm-chip">Faltam <span class="rm-num" id="falta">R$ 2.550,00</span></span>
+  </div>
+  <div class="rm-demo" aria-label="Controle da prévia">
+    <span>Prévia:</span>
+    <button type="button" id="aporte">Registrar aporte de R$ 2.550,00</button>
+    <button type="button" id="zerar">Voltar para 74,5%</button>
+  </div>
+</section>
+<script>
+(function () {
+  var alvo = 1000000, inicial = 745000; // centavos
+  var el = {
+    meta: document.getElementById('meta'), enche: document.getElementById('enche'), barra: document.getElementById('barra'),
+    pct: document.getElementById('pct'), atual: document.getElementById('atual'), estado: document.getElementById('estado'),
+    moeda: document.getElementById('moeda')
+  };
+  var brl = function (c) { return 'R$ ' + (c / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  function mostrar(c) {
+    var p = Math.min(100, c / alvo * 100);
+    el.enche.style.setProperty('--pct', p + '%');
+    el.barra.setAttribute('aria-valuenow', p.toFixed(1));
+    el.pct.textContent = p.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
+    el.atual.textContent = brl(c);
+    var batida = c >= alvo;
+    el.meta.classList.toggle('rm-meta--batida', batida);
+    if (batida) {
+      el.estado.className = 'rm-chip rm-chip--ok';
+      el.estado.textContent = 'Meta atingida';
+      el.moeda.hidden = false;
+      el.moeda.classList.remove('rm-moeda--salta'); void el.moeda.offsetWidth; el.moeda.classList.add('rm-moeda--salta');
+    } else {
+      el.estado.className = 'rm-chip';
+      el.estado.innerHTML = 'Faltam <span class="rm-num">' + brl(alvo - c) + '</span>';
+      el.moeda.hidden = true;
+    }
+  }
+  document.getElementById('aporte').addEventListener('click', function () { mostrar(alvo); });
+  document.getElementById('zerar').addEventListener('click', function () { mostrar(inicial); });
+  requestAnimationFrame(function () { requestAnimationFrame(function () { mostrar(inicial); }); });
+})();
+</script>
+</body>
+</html>

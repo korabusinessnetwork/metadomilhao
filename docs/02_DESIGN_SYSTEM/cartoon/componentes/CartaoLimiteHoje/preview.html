@@ -1,0 +1,30 @@
+<!-- @dsCard group="Hoje" height=300 subtitle="Dentro do limite e estourado" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Cartão Limite de gasto de hoje</title>
+<style>.grade{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding:0 6px 6px 0}</style>
+</head>
+<body>
+<div class="grade">
+  <section class="rm-cartao" aria-labelledby="t1">
+    <div class="rm-limite__topo">
+      <h2 class="rm-cartao__titulo" id="t1">Limite de gasto de hoje</h2>
+      <span class="rm-chip rm-chip--ok">Dentro do limite</span>
+    </div>
+    <span class="rm-limite__valor rm-num">R$ 84,20</span>
+    <p class="rm-limite__sub">restam de <span class="rm-num">R$ 120,00</span>. Gasto hoje: <span class="rm-num">R$ 35,80</span></p>
+    <div class="rm-limite__trilho" role="img" aria-label="30% do limite usado"><div class="rm-limite__gasto" style="width:30%"></div></div>
+  </section>
+
+  <section class="rm-cartao" aria-labelledby="t2">
+    <div class="rm-limite__topo">
+      <h2 class="rm-cartao__titulo" id="t2">Limite de gasto de hoje</h2>
+      <span class="rm-chip rm-chip--bad">Estourado</span>
+    </div>
+    <span class="rm-limite__valor rm-limite__valor--bad rm-num">−R$ 12,40</span>
+    <p class="rm-limite__sub">acima do limite de <span class="rm-num">R$ 120,00</span>. Gasto hoje: <span class="rm-num">R$ 132,40</span></p>
+    <div class="rm-limite__trilho" role="img" aria-label="Limite inteiro usado e ultrapassado"><div class="rm-limite__gasto rm-limite__gasto--bad" style="width:100%"></div></div>
+  </section>
+</div>
+</body>
+</html>

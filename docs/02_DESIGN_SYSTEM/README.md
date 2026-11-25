@@ -2,6 +2,8 @@
 
 Referência visual: o protótipo "Rota do Milhão" (artifact). Estilo de ficha técnica: denso, preciso, números grandes, nada decorativo.
 
+> Proposta em exploração, ainda não adotada: estilo cartoonizado e animado em [`cartoon/`](cartoon/README.md). Enquanto não houver ADR adotando, este documento continua valendo.
+
 ## Cores
 | Token | Claro | Escuro | Uso |
 |---|---|---|---|

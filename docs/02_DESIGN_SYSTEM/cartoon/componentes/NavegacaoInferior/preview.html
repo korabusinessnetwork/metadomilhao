@@ -1,0 +1,35 @@
+<!-- @dsCard group="Navegação" height=260 subtitle="5 itens e o + central que quica ao lançar" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Navegação inferior</title>
+<style>
+  .tela{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .palco{min-height:56px;display:flex;align-items:flex-end;justify-content:center}
+</style>
+</head>
+<body>
+<div class="tela">
+  <div class="palco"><div class="rm-aviso" id="aviso" role="status" hidden>Gasto de <span class="rm-num">R$ 18,50</span> lançado em Alimentação.</div></div>
+  <nav class="rm-nav" aria-label="Principal">
+    <a class="rm-nav__item" href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H4 Z"/><path d="M10 20 V14 H14 V20"/></svg>Hoje</a>
+    <a class="rm-nav__item" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3 H18 V21 L15 19 L12 21 L9 19 L6 21 Z"/><path d="M9 8 H15 M9 12 H15"/></svg>Gastos</a>
+    <button class="rm-mais" type="button" id="mais" aria-label="Lançar gasto"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 5 V25 M5 15 H25"/></svg></button>
+    <a class="rm-nav__item" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 V20 M17 4 V20"/><rect x="4.5" y="8" width="5" height="7" rx="1.5"/><rect x="14.5" y="6" width="5" height="9" rx="1.5"/></svg>Trade</a>
+    <a class="rm-nav__item" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21 V4"/><path d="M6 4 H18 L15 8 L18 12 H6"/></svg>Plano</a>
+    <a class="rm-nav__item" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>Mais</a>
+  </nav>
+  <p class="rm-rotulo" style="margin:0;text-align:center">Prévia: toque no + para simular um gasto salvo.</p>
+</div>
+<script>
+(function () {
+  var mais = document.getElementById('mais'), aviso = document.getElementById('aviso');
+  document.querySelectorAll('.rm-nav__item').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+  mais.addEventListener('click', function () {
+    mais.classList.remove('rm-mais--quica'); void mais.offsetWidth; mais.classList.add('rm-mais--quica');
+    aviso.hidden = false;
+    aviso.classList.remove('rm-aviso--entra'); void aviso.offsetWidth; aviso.classList.add('rm-aviso--entra');
+  });
+})();
+</script>
+</body>
+</html>

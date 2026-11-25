@@ -1,0 +1,50 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Capa</title>
+<style>
+  html, body { margin: 0; padding: 0; background: var(--papel); }
+  .capa { position: relative; width: 960px; height: 288px; overflow: hidden; background: var(--papel); }
+  .capa svg { position: absolute; left: 0; top: 0; width: 960px; height: 124px; }
+  .sombra { fill: var(--sombra-cor); }
+  .traco { stroke: var(--contorno); stroke-width: 3; }
+  .co { fill: var(--co); }
+  .tinta { fill: var(--tinta); }
+  .ok { fill: var(--ok); }
+  .moeda { fill: var(--moeda); }
+  .proj { fill: var(--warn-claro); stroke: var(--warn); stroke-width: 3; stroke-dasharray: 9 7; }
+  .anel { fill: none; stroke: var(--contorno); stroke-width: 2.5; }
+  .r-g { rx: var(--raio-g); }
+  .r-pilula-56 { rx: 28px; }
+  .texto { position: absolute; left: 32px; bottom: 30px; max-width: 900px; }
+  .nome { margin: 0; font: 600 64px/0.95 var(--font-titulo); color: var(--tinta); white-space: nowrap; }
+  .linha { margin: 12px 0 0; font: 500 14px/20px var(--font-texto); color: var(--tinta-suave); }
+</style>
+</head>
+<body>
+<div class="capa">
+  <!--
+    blocos: co 360x104 (raio-g) sangrando no topo; tinta pílula 208x56 (raio-pilula); projeção warn-claro 216x72 tracejado warn (raio-g); ok disco r30; moeda disco r22
+    arranjo: faixa superior escalonada, cada objeto com contorno de 3px (traco-grosso) e sombra chapada deslocada 7px (sombra-g), como recortes colados no papel
+    padrão: pílulas e discos (linha "macio, amigável, raios grandes"), porque o sistema é cartoon de cantos redondos; o retângulo tracejado repete a regra projeção separada de realizado
+    escalas: espaco-4, espaco-6, espaco-8 nos afastamentos; raio-g 22px, raio-pilula; sombra-g 7px
+  -->
+  <svg viewBox="0 0 960 124" aria-hidden="true">
+    <rect class="sombra r-g" x="39" y="-22" width="360" height="104"/>
+    <rect class="co traco r-g" x="32" y="-29" width="360" height="104"/>
+    <circle class="sombra" cx="403" cy="90" r="22"/>
+    <circle class="moeda traco" cx="396" cy="83" r="22"/>
+    <circle class="anel" cx="396" cy="83" r="12"/>
+    <rect class="sombra r-pilula-56" x="463" y="31" width="208" height="56"/>
+    <rect class="tinta traco r-pilula-56" x="456" y="24" width="208" height="56"/>
+    <rect class="proj r-g" x="696" y="16" width="216" height="72"/>
+    <circle class="sombra" cx="907" cy="91" r="28"/>
+    <circle class="ok traco" cx="900" cy="84" r="28"/>
+  </svg>
+  <div class="texto">
+    <h1 class="nome">Rota do Milhão Cartoon</h1>
+    <p class="linha">Traço grosso e movimento no desenho. Números sérios, projeção sempre separada do realizado.</p>
+  </div>
+</div>
+</body>
+</html>

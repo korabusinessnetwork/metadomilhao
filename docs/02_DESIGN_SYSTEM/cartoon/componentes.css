@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&family=Nunito:wght@800;900&display=swap');
+
+/* Rota do Milhão Cartoon: componentes. Todas as cores, raios, sombras e traços vêm de tokens.css. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--font-texto);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 3px; }
+
+.rm-num { font-family: var(--font-numero); font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; white-space: nowrap; }
+.rm-rotulo { font-size: 13px; line-height: 18px; font-weight: 600; color: var(--tinta-suave); }
+.rm-linha { display: flex; flex-wrap: wrap; gap: var(--espaco-3); align-items: center; }
+.rm-pilha { display: grid; gap: var(--espaco-4); }
+.rm-so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Controle de prévia: só existe nas prévias, para repetir uma animação. Não faz parte do app. */
+.rm-demo { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espaco-2); margin-top: var(--espaco-4); padding-top: var(--espaco-3); border-top: var(--traco-fino) dashed var(--tinta-suave); font-size: 13px; color: var(--tinta-suave); }
+.rm-demo button { min-height: var(--alvo-minimo); padding: 0 14px; font: 600 13px/1 var(--font-texto); color: var(--tinta); background: var(--superficie); border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-p); cursor: pointer; }
+
+/* ---------- Cartão ---------- */
+.rm-cartao {
+  background: var(--superficie);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra-m);
+  padding: var(--espaco-4);
+}
+.rm-cartao__titulo { margin: 0 0 var(--espaco-2); font: 600 20px/24px var(--font-titulo); }
+
+/* ---------- Chip de estado (sempre com texto) ---------- */
+.rm-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 2px 10px; border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-pilula); font: 600 13px/18px var(--font-texto); background: var(--superficie-funda); color: var(--tinta); }
+.rm-chip--ok { background: var(--ok-claro); color: var(--ok); }
+.rm-chip--bad { background: var(--bad-claro); color: var(--bad); }
+.rm-chip--warn { background: var(--warn-claro); color: var(--warn); }
+
+/* ---------- Botões ---------- */
+.rm-botao {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--espaco-2);
+  min-height: var(--alvo-botao); padding: 0 22px;
+  font: 600 16px/20px var(--font-titulo);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-pilula);
+  box-shadow: var(--sombra-p);
+  cursor: pointer;
+  transition: transform var(--dur-rapida, 120ms) var(--curva-suave, ease-out), box-shadow var(--dur-rapida, 120ms) var(--curva-suave, ease-out);
+  background: var(--co); color: var(--co-tinta);
+}
+.rm-botao:hover { transform: translate(-1px, -1px); box-shadow: var(--sombra-m); }
+.rm-botao:active { transform: translate(3px, 3px); box-shadow: var(--sombra-pressionada); }
+.rm-botao--secundario { background: var(--superficie); color: var(--tinta); }
+.rm-botao--perigo { background: var(--bad-claro); color: var(--bad); }
+.rm-botao:disabled { cursor: not-allowed; background: var(--superficie-funda); color: var(--tinta-suave); box-shadow: none; transform: none; border-style: dashed; }
+.rm-botao--bloco { width: 100%; }
+
+/* ---------- Cartão Limite de gasto de hoje ---------- */
+.rm-limite__topo { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--espaco-2); flex-wrap: wrap; }
+.rm-limite__valor { display: block; margin: var(--espaco-2) 0 var(--espaco-1); font-weight: 900; font-size: clamp(34px, 9vw, 46px); line-height: 1; }
+.rm-limite__valor--bad { color: var(--bad); }
+.rm-limite__sub { margin: 0 0 var(--espaco-3); font-size: 14px; color: var(--tinta-suave); }
+.rm-limite__trilho { height: 14px; border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-pilula); background: var(--superficie-funda); overflow: hidden; }
+.rm-limite__gasto { height: 100%; background: var(--co); border-right: var(--traco-fino) solid var(--contorno); }
+.rm-limite__gasto--bad { background: var(--bad); border-right: 0; }
+
+/* ---------- BarraMeta ---------- */
+.rm-meta__topo { display: flex; justify-content: space-between; align-items: baseline; gap: var(--espaco-2); flex-wrap: wrap; }
+.rm-meta__nome { margin: 0; font: 600 20px/24px var(--font-titulo); }
+.rm-meta__pct { font-weight: 800; font-size: 24px; line-height: 28px; }
+.rm-meta__palco { position: relative; margin: var(--espaco-3) 0 var(--espaco-2); }
+.rm-meta__trilho { position: relative; height: 28px; border: var(--traco-grosso) solid var(--contorno); border-radius: var(--raio-m); background: var(--superficie-funda); overflow: hidden; }
+.rm-meta__enche {
+  height: 100%; width: var(--pct, 0%);
+  background-color: var(--co);
+  background-image: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.18) 0 8px, transparent 8px 16px);
+  border-right: var(--traco-grosso) solid var(--contorno);
+  border-radius: 0 calc(var(--raio-m) - 6px) calc(var(--raio-m) - 6px) 0;
+  transition: width var(--dur-lenta, 700ms) var(--curva-mola, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+.rm-meta--batida .rm-meta__enche { background-color: var(--ok); border-right: 0; border-radius: 0; }
+.rm-meta__valores { display: flex; justify-content: space-between; gap: var(--espaco-2); flex-wrap: wrap; font-size: 14px; color: var(--tinta-suave); }
+.rm-meta__valores strong { color: var(--tinta); font-weight: 600; }
+
+/* Moedinha: aparece só quando a meta é batida. Decorativa (aria-hidden); o texto "Meta atingida" carrega a informação. */
+.rm-moeda { position: absolute; right: -6px; top: -30px; width: 40px; height: 40px; pointer-events: none; }
+.rm-moeda[hidden] { display: none; }
+.rm-moeda svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.rm-moeda__corpo { fill: var(--moeda); stroke: var(--contorno); stroke-width: 3; }
+.rm-moeda__brilho { fill: none; stroke: var(--contorno); stroke-width: 2.5; stroke-linecap: round; }
+.rm-moeda--salta { animation: rm-moeda-salta var(--dur-lenta, 700ms) var(--curva-mola, cubic-bezier(0.34, 1.56, 0.64, 1)) both; }
+@keyframes rm-moeda-salta {
+  0% { transform: translateY(24px) scale(0.3) rotate(-30deg); opacity: 0; }
+  55% { transform: translateY(-14px) scale(1.15) rotate(12deg); opacity: 1; }
+  100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+}
+
+/* ---------- SeloProjecao ---------- */
+.rm-selo { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 3px 12px; border-radius: var(--raio-p); background: var(--warn-claro); color: var(--warn); font: 600 13px/18px var(--font-texto); }
+.rm-selo__traco { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.rm-selo__traco rect {
+  x: 1.25px; y: 1.25px; width: calc(100% - 2.5px); height: calc(100% - 2.5px); rx: 9px;
+  fill: none; stroke: var(--warn); stroke-width: 2.5; stroke-dasharray: 6 5;
+  animation: rm-tracejar var(--dur-tracejado, 1400ms) linear infinite;
+}
+@keyframes rm-tracejar { to { stroke-dashoffset: -22; } }
+
+.rm-projecao { background: var(--warn-claro); border: var(--traco-grosso) dashed var(--warn); border-radius: var(--raio-g); padding: var(--espaco-4); }
+.rm-projecao__valor { display: block; margin: var(--espaco-2) 0; font-weight: 900; font-size: clamp(30px, 8vw, 40px); line-height: 1; color: var(--tinta); }
+.rm-premissas { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--tinta-suave); }
+.rm-premissas b { color: var(--tinta); font-weight: 600; }
+
+/* Gráfico realizado × projeção */
+.rm-grafico { width: 100%; height: auto; display: block; }
+.rm-grafico .eixo { stroke: var(--tinta-suave); stroke-width: 1.5; }
+.rm-grafico .realizado { fill: none; stroke: var(--co); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.rm-grafico .projetado { fill: none; stroke: var(--warn); stroke-width: 3; stroke-dasharray: 7 6; stroke-linecap: round; animation: rm-tracejar var(--dur-tracejado, 1400ms) linear infinite; }
+.rm-grafico .hoje { fill: var(--superficie); stroke: var(--contorno); stroke-width: 3; }
+.rm-grafico text { fill: var(--tinta-suave); font: 600 12px var(--font-texto); }
+
+/* ---------- FaixaTrava ---------- */
+.rm-trava { position: relative; overflow: hidden; background: var(--bad-claro); border: var(--traco-grosso) solid var(--contorno); border-radius: var(--raio-m); box-shadow: var(--sombra-m); transform-origin: 50% 0; }
+.rm-trava__listras { height: 12px; border-bottom: var(--traco-grosso) solid var(--contorno); background: repeating-linear-gradient(-45deg, var(--bad) 0 10px, var(--bad-claro) 10px 20px); }
+.rm-trava__corpo { display: flex; gap: var(--espaco-3); align-items: flex-start; padding: var(--espaco-3) var(--espaco-4) var(--espaco-4); }
+.rm-trava__cadeado { flex: none; width: 44px; height: 44px; }
+.rm-trava__cadeado .corpo { fill: var(--bad); stroke: var(--contorno); stroke-width: 3; }
+.rm-trava__cadeado .alca { fill: none; stroke: var(--contorno); stroke-width: 4; stroke-linecap: round; }
+.rm-trava__cadeado .furo { fill: var(--bad-claro); stroke: var(--contorno); stroke-width: 2; }
+.rm-trava__titulo { margin: 0 0 2px; font: 600 20px/24px var(--font-titulo); color: var(--tinta); }
+.rm-trava__texto { margin: 0; font-size: 15px; line-height: 22px; color: var(--tinta); }
+.rm-trava__reabre { display: inline-block; margin-top: var(--espaco-2); padding: 2px 10px; border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-p); background: var(--superficie); font-size: 14px; font-weight: 600; color: var(--tinta); }
+.rm-trava--balanca { animation: rm-balanca var(--dur-media, 320ms) ease-in-out 2 both; }
+.rm-trava--balanca .rm-trava__cadeado { animation: rm-cadeado 640ms var(--curva-mola, cubic-bezier(0.34, 1.56, 0.64, 1)) both; }
+@keyframes rm-balanca {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-1.6deg); }
+  75% { transform: rotate(1.6deg); }
+}
+@keyframes rm-cadeado {
+  0% { transform: translateY(-10px) scale(0.6); }
+  60% { transform: translateY(2px) scale(1.12); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ---------- Navegação inferior ---------- */
+.rm-nav {
+  display: grid; grid-template-columns: repeat(6, 1fr); align-items: end;
+  background: var(--superficie);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-g) var(--raio-g) 0 0;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.rm-nav__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 56px; min-width: var(--alvo-minimo);
+  margin: 0 2px; border-radius: var(--raio-m);
+  color: var(--tinta-suave); text-decoration: none;
+  font: 600 12px/16px var(--font-titulo);
+  transition: background-color var(--dur-rapida, 120ms) var(--curva-suave, ease-out);
+}
+.rm-nav__item svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.rm-nav__item[aria-current="page"] { background: var(--co-claro); color: var(--tinta); }
+.rm-nav__item[aria-current="page"] svg { stroke: var(--co); }
+.rm-mais {
+  justify-self: center; align-self: start;
+  width: var(--alvo-mais); height: var(--alvo-mais); margin-top: -30px;
+  display: grid; place-items: center;
+  background: var(--co); color: var(--co-tinta);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-pilula);
+  box-shadow: var(--sombra-g);
+  cursor: pointer;
+  transition: transform var(--dur-rapida, 120ms) var(--curva-suave, ease-out), box-shadow var(--dur-rapida, 120ms) var(--curva-suave, ease-out);
+}
+.rm-mais svg { width: 30px; height: 30px; stroke: currentColor; stroke-width: 4; stroke-linecap: round; }
+.rm-mais:active { transform: translate(5px, 5px); box-shadow: var(--sombra-pressionada); }
+.rm-mais--quica { animation: rm-quica var(--dur-media, 320ms) var(--curva-mola, cubic-bezier(0.34, 1.56, 0.64, 1)) 2 alternate; }
+@keyframes rm-quica {
+  0% { transform: translateY(0) scale(1, 1); }
+  30% { transform: translateY(2px) scale(1.12, 0.86); }
+  100% { transform: translateY(-14px) scale(0.94, 1.08); }
+}
+
+/* Aviso de sucesso que acompanha o quique */
+.rm-aviso { display: inline-flex; align-items: center; gap: var(--espaco-2); min-height: var(--alvo-minimo); padding: 6px 14px; background: var(--superficie); border: var(--traco-grosso) solid var(--contorno); border-radius: var(--raio-m); box-shadow: var(--sombra-p); font-size: 15px; }
+.rm-aviso[hidden] { display: none; }
+.rm-aviso--entra { animation: rm-entra var(--dur-media, 320ms) var(--curva-mola, cubic-bezier(0.34, 1.56, 0.64, 1)) both; }
+@keyframes rm-entra { from { transform: translateY(12px) scale(0.92); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- Cartão de notícia ---------- */
+.rm-noticia__meta { display: flex; flex-wrap: wrap; gap: var(--espaco-2); align-items: center; margin-bottom: var(--espaco-2); font-size: 13px; color: var(--tinta-suave); }
+.rm-noticia__fonte { font-weight: 600; color: var(--tinta); }
+.rm-noticia__titulo { margin: 0 0 var(--espaco-2); font: 600 19px/24px var(--font-titulo); }
+.rm-noticia__resumo { margin: 0 0 var(--espaco-3); font-size: 15px; line-height: 22px; }
+.rm-impacto { border: var(--traco-fino) dashed var(--warn); background: var(--warn-claro); border-radius: var(--raio-m); padding: var(--espaco-2) var(--espaco-3); }
+.rm-impacto__rotulo { display: block; font: 600 13px/18px var(--font-texto); color: var(--warn); }
+.rm-impacto p { margin: 2px 0 0; font-size: 14px; line-height: 20px; color: var(--tinta); }
+.rm-noticia__link { display: inline-flex; align-items: center; min-height: var(--alvo-minimo); margin-top: var(--espaco-2); font-weight: 600; color: var(--tinta); text-decoration: underline; text-decoration-color: var(--co); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+
+/* ---------- Movimento reduzido: estado final direto, sem animação ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

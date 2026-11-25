@@ -1,0 +1,84 @@
+/* Celular: navegação inferior com botão + central. Desktop (≥ 900px): barra lateral. */
+.app {
+  min-height: 100dvh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+.conteudo {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.navegacao {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 10;
+}
+
+.navegacao a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  color: var(--mut);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.navegacao a.ativo { color: var(--co); font-weight: 600; }
+
+.navegacao .mais-botao {
+  justify-self: center;
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  border-radius: 50%;
+  background: var(--co);
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  margin-top: -20px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+}
+
+.navegacao .mais-botao.ativo { color: #fff; }
+
+.marca { display: none; }
+
+@media (min-width: 900px) {
+  .app { padding-bottom: 0; padding-left: 220px; }
+  .navegacao {
+    top: 0;
+    right: auto;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+    padding: 16px 8px;
+    gap: 4px;
+  }
+  .navegacao a { flex-direction: row; justify-content: flex-start; padding: 0 12px; min-height: var(--toque); font-size: 16px; border-radius: var(--raio); }
+  .navegacao a.ativo { background: var(--zone); }
+  .navegacao .mais-botao { order: 10; width: auto; height: auto; min-height: var(--toque); border-radius: var(--raio); font-size: 16px; margin: 12px 0 0; justify-content: center; box-shadow: none; }
+  .marca { display: block; font-family: var(--fonte-titulo); font-weight: 600; font-size: 22px; padding: 8px 12px 16px; color: var(--ink); }
+  .conteudo { padding: 24px 32px; }
+}
+
+.cabecalho-tela { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.cabecalho-tela h1 { margin: 0; }
+
+.tela-centro { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
+.cartao-login { width: 100%; max-width: 380px; }

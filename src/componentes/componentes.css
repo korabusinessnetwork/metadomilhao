@@ -1,0 +1,52 @@
+.dinheiro { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.dinheiro.positivo { color: var(--ok); }
+.dinheiro.negativo { color: var(--bad); }
+
+.selo-projecao {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--warn);
+}
+.selo-projecao .rotulo {
+  font-family: var(--fonte-texto);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px dashed var(--warn);
+  border-radius: var(--raio);
+  padding: 0 6px;
+}
+
+.barra-meta { margin: 8px 0; }
+.barra-meta .trilho { height: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--raio); overflow: hidden; }
+.barra-meta .preenchido { height: 100%; background: var(--ok); }
+.barra-meta.estourou .preenchido { background: var(--bad); }
+.barra-meta .legenda { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--mut); margin-top: 4px; }
+
+.estado-vazio { text-align: center; padding: 24px 16px; color: var(--mut); }
+.estado-vazio p { margin-bottom: 12px; }
+
+.carregando { color: var(--mut); padding: 16px 0; }
+
+.seletor-categoria { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.seletor-categoria button {
+  min-height: var(--toque);
+  border: 1px solid var(--line);
+  border-radius: var(--raio);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.seletor-categoria button[aria-pressed='true'] { border-color: var(--co); background: var(--zone); color: var(--co); font-weight: 600; }
+
+.campo-valor input { font-family: var(--fonte-titulo); font-size: 34px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; min-height: 64px; }
+
+.grafico { width: 100%; height: auto; display: block; }
+.grafico .eixo { stroke: var(--line); }
+.grafico .real { stroke: var(--co); fill: none; stroke-width: 2.5; }
+.grafico .projetado { stroke: var(--warn); fill: none; stroke-width: 2; stroke-dasharray: 6 5; }
+.grafico text { fill: var(--mut); font-size: 12px; font-family: var(--fonte-texto); }
+.legenda-grafico { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--mut); }
+.legenda-grafico .traco { display: inline-block; width: 20px; height: 0; border-top: 2.5px solid var(--co); vertical-align: middle; margin-right: 6px; }
+.legenda-grafico .traco.projetado { border-top: 2px dashed var(--warn); }

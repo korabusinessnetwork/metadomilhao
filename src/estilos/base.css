@@ -1,0 +1,116 @@
+/* Tokens do design system (docs/02_DESIGN_SYSTEM) */
+:root {
+  --bg: #ffffff;
+  --ink: #0b0d12;
+  --mut: #5a6070;
+  --zone: #eef2ff;
+  --line: #d9dff0;
+  --co: #1240e0;
+  --ok: #0a7d4f;
+  --bad: #c0261c;
+  --warn: #9a6200;
+  --raio: 6px;
+  --toque: 44px;
+  --fonte-titulo: 'Space Grotesk', system-ui, sans-serif;
+  --fonte-texto: 'Inter', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0d18;
+    --ink: #e9ecf5;
+    --mut: #98a0b5;
+    --zone: #121833;
+    --line: #232b4a;
+    --co: #5b7cff;
+    --ok: #3ccf8e;
+    --bad: #ff6b5e;
+    --warn: #f2b84b;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--fonte-texto);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--fonte-titulo); font-weight: 600; margin: 0 0 12px; line-height: 1.15; }
+h1 { font-size: 22px; }
+h2 { font-size: 16px; text-transform: none; }
+h3 { font-size: 13px; color: var(--mut); font-weight: 600; }
+p { margin: 0 0 8px; }
+a { color: var(--co); }
+
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.direita { text-align: right; }
+.mut { color: var(--mut); }
+.pequeno { font-size: 13px; }
+.destaque { font-family: var(--fonte-titulo); font-weight: 600; font-size: clamp(34px, 9vw, 46px); line-height: 1; }
+.medio { font-family: var(--fonte-titulo); font-weight: 600; font-size: 22px; }
+.ok { color: var(--ok); }
+.bad { color: var(--bad); }
+.warn { color: var(--warn); }
+
+/* Formulários: 16px evita zoom no iOS; alvo de toque de 44px */
+input, select, textarea, button { font: inherit; font-size: 16px; }
+input, select, textarea {
+  width: 100%;
+  min-height: var(--toque);
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--raio);
+  background: var(--bg);
+  color: var(--ink);
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--co);
+  outline-offset: 2px;
+}
+label { display: block; font-size: 13px; font-weight: 500; color: var(--mut); margin-bottom: 4px; }
+.campo { margin-bottom: 12px; }
+.linha-campos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.marcar { display: flex; align-items: center; gap: 8px; min-height: var(--toque); color: var(--ink); font-size: 16px; }
+.marcar input { width: 20px; min-height: 20px; }
+
+.botao {
+  min-height: var(--toque);
+  padding: 8px 16px;
+  border-radius: var(--raio);
+  border: 1px solid var(--co);
+  background: var(--co);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.botao:disabled { opacity: 0.55; cursor: not-allowed; }
+.botao.secundario { background: transparent; color: var(--co); }
+.botao.perigo { background: transparent; color: var(--bad); border-color: var(--bad); }
+.botao.bloco { width: 100%; }
+.acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+.painel { background: var(--zone); border: 1px solid var(--line); border-radius: var(--raio); padding: 16px; margin-bottom: 16px; }
+.grade { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px 4px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { color: var(--mut); font-weight: 600; }
+td.num, th.num { text-align: right; }
+
+.aviso { border-left: 4px solid var(--warn); background: var(--zone); padding: 8px 12px; border-radius: var(--raio); margin-bottom: 12px; }
+.aviso.erro { border-left-color: var(--bad); }
+.aviso.sucesso { border-left-color: var(--ok); }
+
+.rotulo-oculto label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.rotulo-oculto .campo { margin-bottom: 4px; }
+
+.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

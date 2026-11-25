@@ -14,5 +14,10 @@
 - **Sabotar para provar.** Trocar `e_dono` por `true` fez os testes de isolamento falharem, prova de que eles pegam vazamento.
 - **Meta zero engana.** Qualquer "completo" ou "atingido" precisa checar se a meta existe.
 
+## Da Fase 2 (25/11/2026)
+- **Testar pela tela pega o que o teste de unidade não imagina.** O capital depositado no mesmo dia e a corrida do StrictMode só apareceram usando o app.
+- **Trava precisa de memória.** Regra de "bateu o limite" é sobre o caminho, não sobre o saldo do fim.
+- **Comparação com zero engana de novo:** `0 <= -0` é verdadeiro. Limite sem capital tem que ser tratado à parte.
+
 ## Formato
 Cada aprendizado novo: data, o que aconteceu, o que muda no sistema (regra, ADR ou backlog).

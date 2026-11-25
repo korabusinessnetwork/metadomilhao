@@ -2,7 +2,7 @@
 
 Sistema financeiro pessoal do Matheus: orçamento, metas diárias, mensais e anuais, plano até o primeiro milhão, carteira de investimentos e diário detalhado de day trade com revisão de notícias por IA antes do pregão.
 
-**Estado:** Fase 1 (MVP financeiro) construída e testada no ambiente local. Falta publicar (Supabase na nuvem + Vercel).
+**Estado:** Fases 1 (MVP financeiro) e 2 (diário de trade) construídas e testadas no ambiente local. Falta publicar (Supabase na nuvem + Vercel).
 **Início da sistemática:** depois da mudança de moradia, prevista para fevereiro de 2027.
 
 ## Rodar localmente
@@ -21,8 +21,8 @@ O cadastro público é desligado. No ambiente local, crie o usuário com `script
 ## Testes
 
 ```bash
-npm test            # regras puras (M, P, PL, O, F), dinheiro, datas, CSV
-npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento imutável, O-02
+npm test            # regras puras (M, P, PL, O, F, T, TR, IR), dinheiro, datas, CSV
+npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento, O-02, travas (ADR-003), T-04, T-08, P-02, P-04
 npm run build       # typecheck + build do PWA
 ```
 

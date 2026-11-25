@@ -14,6 +14,10 @@ import { Orcamento } from '../features/orcamento/Orcamento'
 import { Patrimonio } from '../features/patrimonio/Patrimonio'
 import { Plano } from '../features/plano/Plano'
 import { Layout, Mais } from './Layout'
+import { Trade } from '../features/trade/Trade'
+import { ConfigurarTrade } from '../features/trade/ConfigurarTrade'
+import { Estatisticas } from '../features/trade/Estatisticas'
+import { IR } from '../features/trade/IR'
 
 /** Rota protegida: só renderiza o app depois da sessão, do segundo fator e do perfil (docs/11_SEGURANCA). */
 function Portao() {
@@ -30,6 +34,10 @@ function Portao() {
         <Route path="gastos" element={<Gastos />} />
         <Route path="gastos/novo" element={<NovoLancamento />} />
         <Route path="plano" element={<Plano />} />
+        <Route path="trade" element={<Trade />} />
+        <Route path="trade/configurar" element={<ConfigurarTrade />} />
+        <Route path="trade/estatisticas" element={<Estatisticas />} />
+        <Route path="trade/ir" element={<IR />} />
         <Route path="mais" element={<Mais />} />
         <Route path="patrimonio" element={<Patrimonio />} />
         <Route path="orcamento" element={<Orcamento />} />

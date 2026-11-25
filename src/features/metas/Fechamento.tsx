@@ -11,6 +11,8 @@ import { premissasDoPlano } from '../../lib/calculos/plano'
 import { mesesAteMeta } from '../../lib/calculos/projecao'
 import { dataEmSaoPaulo, inicioDoMes, somarMeses, ultimoDiaDoMes } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
+import { listarOperacoes, listarTodasFechadas } from '../../lib/services/tradeService'
+import { apurarIR, mesesDeDayTrade } from '../../lib/calculos/ir'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjecao } from '../../componentes/Basicos'
 
 function nomeDoMes(mes: string) {
@@ -29,7 +31,12 @@ export function Fechamento() {
   const [enviando, setEnviando] = useState(false)
 
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [lanc, rendas, movs, orc, cats, hist] = await Promise.all([listarMes(mes), listarRendas(mes), listarMovimentos(), obterMes(mes), listarCategorias(), historico()])
+    const [lanc, rendas, movs, orc, cats, hist, opsMes, opsTodas] = await Promise.all([
+      listarMes(mes), listarRendas(mes), listarMovimentos(), obterMes(mes), listarCategorias(), historico(),
+      listarOperacoes(mes, ultimoDiaDoMes(mes)), listarTodasFechadas(),
+    ])
+    if (opsMes.erro !== null) return opsMes
+    if (opsTodas.erro !== null) return opsTodas
     if (lanc.erro !== null) return lanc
     if (rendas.erro !== null) return rendas
     if (movs.erro !== null) return movs
@@ -37,7 +44,7 @@ export function Fechamento() {
     if (hist.erro !== null) return hist
     // Mês sem orçamento aberto conta como orçado zero
     const itens = orc.dados?.itens ?? []
-    return ok({ lancamentos: lanc.dados, rendas: rendas.dados, movimentos: movs.dados, itens, categorias: cats.dados, historico: hist.dados })
+    return ok({ lancamentos: lanc.dados, rendas: rendas.dados, movimentos: movs.dados, itens, categorias: cats.dados, historico: hist.dados, opsMes: opsMes.dados, opsTodas: opsTodas.dados })
   }, [mes])
 
   if (carregando) return <Carregando />
@@ -65,6 +72,11 @@ export function Fechamento() {
   const prazo = mesesAteMeta({ patrimonioInicialCentavos: rascunho.patrimonioReal, taxaRealMensal: premissas.taxaRealMensal, aporte: premissas.aporte, metaCentavos: premissas.metaCentavos })
   const nomeCategoria = (id: string) => dados.categorias.find((c) => c.id === id)?.nome ?? ''
   const mesEmAndamento = mes >= inicioDoMes(dataEmSaoPaulo())
+  // TR-06: violações do mês com contagem e resultado
+  const violacoes = dados.opsMes.filter((o) => o.violacao_trava)
+  const resultadoViolacoes = violacoes.reduce((s, o) => s + (o.resultado_liquido_centavos ?? 0), 0)
+  const resultadoTrade = dados.opsMes.reduce((s, o) => s + (o.resultado_liquido_centavos ?? 0), 0)
+  const irDoMes = apurarIR(mesesDeDayTrade(dados.opsTodas.filter((o) => o.data <= ultimoDiaDoMes(mes)))).find((m) => m.mes === mes)
 
   async function aoConfirmar() {
     if (!dados) return
@@ -73,7 +85,7 @@ export function Fechamento() {
       : 'Confirmar o fechamento? Depois de gravado ele não é editado, só substituído por uma correção.'
     if (!window.confirm(texto)) return
     setEnviando(true)
-    const r = await confirmar(mes, rascunho, notas, vigente?.id ?? null)
+    const r = await confirmar(mes, rascunho, notas, vigente?.id ?? null, violacoes.length)
     if (!r.erro) {
       // O-03: marca como estimativa as categorias sem lançamento nos 2 últimos meses fechados
       const meses = [mes, somarMeses(mes, -1)]
@@ -158,7 +170,25 @@ export function Fechamento() {
               </table>
             </>
           )}
-          <p className="pequeno mut">Violações de trava e IR do trade entram na Fase 2.</p>
+          <h3>Trade no mês</h3>
+          <table>
+            <tbody>
+              <tr><td>Resultado líquido</td><td className="num"><Dinheiro centavos={resultadoTrade} semantico /></td></tr>
+              <tr>
+                <td>Violações de trava (TR-06)</td>
+                <td className={`num ${violacoes.length > 0 ? 'bad' : ''}`}>
+                  {violacoes.length} {violacoes.length > 0 && <>(<Dinheiro centavos={resultadoViolacoes} semantico />)</>}
+                </td>
+              </tr>
+              <tr>
+                <td>IR do trade a pagar</td>
+                <td className="num">
+                  <Dinheiro centavos={irDoMes?.impostoDevidoCentavos ?? 0} />
+                  {irDoMes && irDoMes.impostoDevidoCentavos > 0 && <div className="pequeno mut">vence {irDoMes.vencimento.split('-').reverse().join('/')}</div>}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </section>
       </div>
 

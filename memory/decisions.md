@@ -31,7 +31,18 @@
 - **Fechamento sem cron:** o rascunho é calculado na hora em que a tela abre. A Edge Function `fechamento-mensal` ficou desnecessária na Fase 1.
 - **P-02 só na tela:** a trava de aporte em capital de trade antes da reserva completa vai para o banco na Fase 2, junto com `conta_trade`.
 
+## Decisões da Fase 2 (2026-11-25)
+- **Status do dia é calculado, não guardado:** `status_travas(data)` deriva tudo das operações. Não há campo de status para alguém "destravar" (TR-05). A tabela `dia_trade` guarda só a nota e o encerramento manual, que não tem volta.
+- **Trava pelo caminho, não pelo saldo final:** o período fecha se o acumulado bateu o limite em qualquer momento, na ordem de encerramento. Lucro posterior, como uma violação, não reabre.
+- **Capital do período:** depósitos até a data, mais o resultado das operações fechadas antes do início do período. O resultado do próprio período não mexe no limite dele. Limite zero (sem capital) não fecha nada; a T-04 barra.
+- **Violação só com período fechado:** com o período aberto, a operação entra como normal.
+- **Multiplicador e risco no banco:** o trigger ignora o que o cliente manda (T-03).
+- **Operação: planejar e encerrar uma vez só.** Encerrada, não muda. Não há delete.
+- **Capital de trade é um ativo da carteira:** o resultado das operações entra no saldo desse ativo (`v_saldo_ativo`), então o patrimônio já reflete o trade.
+- **IRRF que sobra passa para os meses seguintes** (prática da Receita); o mínimo de R$ 10 do DARF é só aviso, não entra no cálculo.
+- **Navegação:** 5 itens + "+" (Hoje, Gastos, +, Trade, Plano, Mais). O "+" abre gasto; operação se registra na tela Trade.
+
 ## Em aberto
 - P-03 com mês fechado de gasto zero zera a meta da reserva. Decidir se mês sem gasto entra na média.
 - Regra exata de meta de lucro diária (M-10) a validar após 30 dias de operação real.
-- Calendário de feriados da B3: fonte e atualização anual.
+- Calendário de feriados da B3: fonte e atualização anual. Hoje "dia útil" = segunda a sexta.

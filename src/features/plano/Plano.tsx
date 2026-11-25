@@ -7,6 +7,8 @@ import { montarCenarios, projetarSerie, taxaAnualEquivalente } from '../../lib/c
 import { metaAnualAporte, metaAnualPatrimonio } from '../../lib/calculos/metas'
 import { dataEmSaoPaulo, inicioDoMes, somarMeses } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
+import { listarTodasFechadas } from '../../lib/services/tradeService'
+import { aporteMensalDoTrade, desempenhoDe, tradeValidado } from '../../lib/calculos/risco'
 import { Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjecao } from '../../componentes/Basicos'
 import { GraficoPatrimonio, type PontoGrafico } from '../../componentes/GraficoPatrimonio'
 
@@ -17,10 +19,11 @@ const rotuloMes = (mes: string) => `${mes.slice(5, 7)}/${mes.slice(2, 4)}`
 export function Plano() {
   const { perfil, plano } = useSessao()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [s, f] = await Promise.all([saldos(), historico()])
+    const [s, f, ops] = await Promise.all([saldos(), historico(), listarTodasFechadas()])
     if (s.erro !== null) return s
     if (f.erro !== null) return f
-    return ok({ saldos: s.dados, fechamentos: f.dados })
+    if (ops.erro !== null) return ops
+    return ok({ saldos: s.dados, fechamentos: f.dados, ops: ops.dados })
   }, [])
 
   if (carregando) return <Carregando />
@@ -30,10 +33,14 @@ export function Plano() {
   const mesAtual = inicioDoMes(hoje)
   const premissas = premissasDoPlano(plano, perfil?.data_mudanca ?? null, hoje)
   const patrimonioAtual = dados.saldos.filter((a) => a.ativo).reduce((s, a) => s + a.saldo_centavos, 0)
-  // T-09: o cenário com trade só aparece quando a regra de aumento de risco (T-08) for atendida, na Fase 2
+  // T-09: o cenário com trade só existe com 100 operações, expectativa positiva e zero violações em 30 dias
+  const opsSimples = dados.ops.map((o) => ({ data: o.data, resultadoLiquidoCentavos: o.resultado_liquido_centavos ?? 0, violacaoTrava: o.violacao_trava }))
+  const desempenho = desempenhoDe(opsSimples, hoje)
+  const tradeHabilitado = tradeValidado(desempenho)
+  const aporteTrade = aporteMensalDoTrade(opsSimples, plano.pct_lucro_trade_para_aporte)
   const cenarios = montarCenarios(
     { patrimonioInicialCentavos: patrimonioAtual, taxaRealMensal: premissas.taxaRealMensal, aporte: premissas.aporte, metaCentavos: premissas.metaCentavos },
-    { tradeHabilitado: false, aporteTradeCentavos: 0 },
+    { tradeHabilitado, aporteTradeCentavos: aporteTrade },
   )
 
   // M-03: a meta do ano parte do patrimônio real mais recente (último fechamento, ou o saldo de hoje)
@@ -71,10 +78,22 @@ export function Plano() {
             </p>
           </section>
         ))}
-        <section className="painel">
-          <h2>Cenário com trade</h2>
-          <p className="mut">Só entra quando houver 100 operações, expectativa positiva e zero violações em 30 dias (T-08, T-09). Fase 2.</p>
-        </section>
+        {tradeHabilitado ? (
+          <section className="painel">
+            <h3>Premissa do cenário com trade</h3>
+            <p className="pequeno">
+              Aporte extra de <Dinheiro centavos={aporteTrade} /> por mês: {plano.pct_lucro_trade_para_aporte}% da média mensal do lucro líquido (P-05). Cenário, não promessa.
+            </p>
+          </section>
+        ) : (
+          <section className="painel">
+            <h2>Cenário com trade</h2>
+            <p className="mut">
+              Só entra com 100 operações, expectativa positiva e zero violações em 30 dias (T-09). Hoje: {desempenho.operacoesFechadas} operações,{' '}
+              {desempenho.violacoesUltimos30Dias} violações em 30 dias.
+            </p>
+          </section>
+        )}
       </div>
 
       <section className="painel">

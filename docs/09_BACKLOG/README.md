@@ -22,12 +22,14 @@
 - [ ] Testar a instalação do PWA no celular de verdade
 
 ## Fase 2, Diário de trade
-- [ ] Conta de trade, setups, limites (M-10 a M-13)
-- [ ] Registro detalhado de operação (T-01 a T-05)
-- [ ] Travas no banco e registro de violação (TR-01 a TR-06, ADR-003)
-- [ ] Estatísticas (T-06, T-07)
-- [ ] Regra de aumento de risco (T-08) e entrada no plano (T-09)
-- [ ] Apuração de IR e DARF estimado (IR-01 a IR-04)
+- [x] Conta de trade, setups, limites (M-10 a M-13), com versões que valem do dia seguinte (ADR-003)
+- [x] Registro detalhado de operação (T-01 a T-05): planejar, depois registrar a saída
+- [x] Travas no banco e registro de violação (TR-01 a TR-06, ADR-003)
+- [x] Estatísticas (T-06, T-07)
+- [x] Regra de aumento de risco (T-08) e entrada no plano (T-09)
+- [x] Apuração de IR e DARF estimado (IR-01 a IR-04)
+- [x] P-02 e P-04 aplicadas no banco
+- [ ] Feriados da B3 no "próximo dia útil" e no vencimento do DARF (depende do calendário da Fase 3)
 
 ## Fase 3, Revisão de notícias por IA
 - [ ] Watchlist (máximo 10)

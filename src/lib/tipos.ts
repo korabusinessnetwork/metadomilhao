@@ -115,3 +115,79 @@ export const NOMES_MOVIMENTO: Record<TipoMovimento, string> = {
   rendimento: 'Rendimento',
   ajuste_saldo: 'Ajuste de saldo',
 }
+
+// ---------- Fase 2: trade ----------
+import type { Direcao, Mercado, Tendencia, Timeframe } from './calculos/trade'
+import type { MotivoTrava } from './calculos/travas'
+
+export interface ParametrosTrade {
+  id: string
+  vigente_desde: string
+  risco_operacao_centavos: number
+  stop_gain_r: number
+  stop_loss_dia_r: number
+  pct_perda_dia: number
+  pct_perda_semana: number
+  pct_perda_mes: number
+  aumento_risco: boolean
+}
+
+export interface Setup {
+  id: string
+  nome: string
+  descricao: string | null
+  ativo: boolean
+}
+
+export interface Operacao {
+  id: string
+  data: string
+  aberta_em: string
+  fechada_em: string | null
+  ativo: string
+  mercado: Mercado
+  direcao: Direcao
+  quantidade: number
+  preco_entrada: number
+  preco_stop: number
+  preco_alvo: number
+  preco_saida: number | null
+  risco_centavos: number
+  resultado_bruto_centavos: number | null
+  custos_centavos: number | null
+  resultado_liquido_centavos: number | null
+  resultado_r: number | null
+  setup_id: string
+  tendencia_diario: Tendencia
+  tendencia_h1: Tendencia
+  tendencia_h4: Tendencia
+  timeframe_entrada: Timeframe
+  teve_noticia: boolean
+  noticia_descricao: string | null
+  seguiu_plano: boolean | null
+  observacao: string | null
+  violacao_trava: boolean
+}
+
+export interface StatusTravasBanco {
+  data: string
+  aberto: boolean
+  motivo: MotivoTrava | null
+  reabre_em: string | null
+  meta_dia_centavos: number
+  perda_dia_centavos: number
+  perda_semana_centavos: number
+  perda_mes_centavos: number
+  resultado_dia_centavos: number
+  resultado_semana_centavos: number
+  resultado_mes_centavos: number
+  capital_inicio_dia_centavos: number
+  risco_operacao_centavos: number
+}
+
+export interface PagamentoIR {
+  id: string
+  mes: string
+  valor_centavos: number
+  pago_em: string
+}

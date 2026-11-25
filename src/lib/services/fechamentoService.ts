@@ -11,7 +11,7 @@ export async function historico(): Promise<Resultado<Fechamento[]>> {
 }
 
 /** Grava o fechamento. Se o mês já tem um vigente, entra como substituição (o original fica no histórico). */
-export async function confirmar(mes: string, r: RascunhoFechamento, notas: string, substitui: string | null): Promise<Resultado<null>> {
+export async function confirmar(mes: string, r: RascunhoFechamento, notas: string, substitui: string | null, violacoesTrava: number): Promise<Resultado<null>> {
   return executar(
     supabase
       .from('fechamento_mes')
@@ -23,7 +23,7 @@ export async function confirmar(mes: string, r: RascunhoFechamento, notas: strin
         patrimonio_real: r.patrimonioReal,
         patrimonio_projetado: r.patrimonioProjetado,
         meta_batida: r.metaBatida,
-        violacoes_trava: 0, // travas de trade entram na Fase 2 (TR-06)
+        violacoes_trava: violacoesTrava, // TR-06
         notas: notas.trim() || null,
         substitui,
       })

@@ -10,23 +10,26 @@ import { metaReserva } from '../../lib/calculos/reserva'
 import { resumoCarteira } from '../../lib/calculos/patrimonio'
 import { somarMeses } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
+import { statusHoje } from '../../lib/services/tradeService'
+import { TEXTO_MOTIVO } from '../../lib/calculos/travas'
 import { Aviso, BarraMeta, Carregando, Dinheiro, ErroComAcao, Prazo, SeloProjecao } from '../../componentes/Basicos'
 
-/** Topo do dia: limite de gasto restante, prazo do milhão e reserva (docs/02_DESIGN_SYSTEM). Trade entra na Fase 2. */
+/** Topo do dia: limite de gasto restante, status do trade, prazo do milhão e reserva (docs/02_DESIGN_SYSTEM). */
 export function Hoje() {
   const { perfil, plano } = useSessao()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
-    const [mes, carteira, fechamentos] = await Promise.all([carregarDadosDoMes(), saldos(), historico()])
+    const [mes, carteira, fechamentos, trade] = await Promise.all([carregarDadosDoMes(), saldos(), historico(), statusHoje()])
     if (mes.erro !== null) return mes
     if (carteira.erro !== null) return carteira
     if (fechamentos.erro !== null) return fechamentos
-    return ok({ mes: mes.dados, carteira: carteira.dados, fechamentos: fechamentos.dados })
+    if (trade.erro !== null) return trade
+    return ok({ mes: mes.dados, carteira: carteira.dados, fechamentos: fechamentos.dados, trade: trade.dados })
   }, [])
 
   if (carregando) return <Carregando />
   if (erro || !dados || !plano) return <ErroComAcao erro={erro ?? 'Plano não encontrado.'} tentarDeNovo={recarregar} />
 
-  const { mes, carteira, fechamentos } = dados
+  const { mes, carteira, fechamentos, trade } = dados
   const premissas = premissasDoPlano(plano, perfil?.data_mudanca ?? null, mes.hoje)
   const resumo = resumoCarteira(
     carteira.filter((a) => a.ativo),
@@ -80,6 +83,31 @@ export function Hoje() {
           <h2 id="t-mes">Gasto do mês</h2>
           <BarraMeta realCentavos={mes.gastoTotal} metaCentavos={mes.orcadoTotal} rotulo="Gasto do mês contra o orçado" />
           <Link to="/gastos">Ver lançamentos</Link>
+        </section>
+
+        <section className="painel" aria-labelledby="t-trade">
+          <h2 id="t-trade">Trade de hoje</h2>
+          {!trade ? (
+            <p className="mut">
+              Trade não configurado. <Link to="/trade/configurar">Configurar</Link>
+            </p>
+          ) : trade.aberto ? (
+            <>
+              <p className="medio ok">Diário aberto</p>
+              <p className="pequeno">
+                Resultado <Dinheiro centavos={trade.resultado_dia_centavos} semantico />. Meta <Dinheiro centavos={trade.meta_dia_centavos} />, limite de perda{' '}
+                <Dinheiro centavos={trade.perda_dia_centavos} />.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="medio bad">Diário fechado</p>
+              <p className="pequeno">
+                {trade.motivo ? TEXTO_MOTIVO[trade.motivo] : ''} Reabre em {trade.reabre_em?.split('-').reverse().join('/')}.
+              </p>
+            </>
+          )}
+          <Link to="/trade">Ir para o trade</Link>
         </section>
 
         <section className="painel" aria-labelledby="t-milhao">

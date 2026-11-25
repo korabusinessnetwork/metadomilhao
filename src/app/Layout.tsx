@@ -3,7 +3,7 @@ import '../estilos/layout.css'
 
 const classe = ({ isActive }: { isActive: boolean }) => (isActive ? 'ativo' : '')
 
-/** Celular: Hoje, Gastos, +, Plano, Mais. Desktop: barra lateral com os mesmos itens. Trade entra na Fase 2. */
+/** Celular: Hoje, Gastos, +, Trade, Plano, Mais (docs/02_DESIGN_SYSTEM). Desktop: barra lateral com os mesmos itens. */
 export function Layout() {
   return (
     <div className="app">
@@ -18,6 +18,9 @@ export function Layout() {
         <NavLink to="/gastos/novo" className={({ isActive }) => `mais-botao ${isActive ? 'ativo' : ''}`} aria-label="Novo gasto">
           <span aria-hidden="true">+</span>
           <span className="so-leitor">Novo gasto</span>
+        </NavLink>
+        <NavLink to="/trade" className={classe}>
+          Trade
         </NavLink>
         <NavLink to="/plano" className={classe}>
           Plano

@@ -59,3 +59,45 @@ export function mesesEntre(de: string, ate: string): number {
 export function diaDoMes(data: string): number {
   return partes(data)[2]
 }
+
+/** 0 = domingo ... 6 = sábado, para uma data de calendário. */
+export function diaDaSemana(data: string): number {
+  const [a, m, d] = partes(data)
+  return new Date(Date.UTC(a, m - 1, d)).getUTCDay()
+}
+
+export function somarDias(data: string, dias: number): string {
+  const [a, m, d] = partes(data)
+  const x = new Date(Date.UTC(a, m - 1, d + dias))
+  return texto(x.getUTCFullYear(), x.getUTCMonth() + 1, x.getUTCDate())
+}
+
+/** Semana começa na segunda (memory/patterns.md). */
+export function inicioDaSemana(data: string): string {
+  const dia = diaDaSemana(data)
+  return somarDias(data, dia === 0 ? -6 : 1 - dia)
+}
+
+/** Dia útil = segunda a sexta. Feriados da B3 entram com o calendário de pregão (Fase 3). */
+export function eDiaUtil(data: string): boolean {
+  const d = diaDaSemana(data)
+  return d !== 0 && d !== 6
+}
+
+export function proximoDiaUtil(data: string): string {
+  let d = somarDias(data, 1)
+  while (!eDiaUtil(d)) d = somarDias(d, 1)
+  return d
+}
+
+export function primeiroDiaUtilDoMes(mes: string): string {
+  let d = inicioDoMes(mes)
+  while (!eDiaUtil(d)) d = somarDias(d, 1)
+  return d
+}
+
+export function ultimoDiaUtilDoMes(mes: string): string {
+  let d = ultimoDiaDoMes(mes)
+  while (!eDiaUtil(d)) d = somarDias(d, -1)
+  return d
+}

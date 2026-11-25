@@ -21,7 +21,7 @@ Ordem: da mais importante para a menos importante.
 - **Onde colar o resultado:** secrets do projeto Supabase.
 - **Como confirmar que funcionou:** na tela Notícias, "Gerar agora" e ver a revisão com fontes reais e o custo no painel de uso.
 
-## P03 Mandar um relatório real do MT5 [prioridade: média]
+## P03 Mandar um relatório real do MT5 [ADIADA pelo Matheus em 2026-11-25]
 - **Por quê:** o importador foi escrito pelo formato padrão do relatório HTML; precisa ser conferido com um arquivo seu.
 - **Contorno atual:** testado com relatórios de exemplo montados no mesmo formato.
 - **Passo a passo:** no MT5, aba Histórico, botão direito, Relatório, HTML. Pode trocar valores, mantenha as colunas.

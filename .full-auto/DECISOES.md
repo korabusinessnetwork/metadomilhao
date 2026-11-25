@@ -39,6 +39,12 @@ Decisões de produto e de arquitetura anteriores a este modo estão em `memory/d
 - **Por quê:** mudar a regra de negócio é decisão do dono; o risco de enganar já está coberto pela tela.
 - **Como reverter:** ajustar `metaReserva` em `src/lib/calculos/reserva.ts` e `meta_reserva` no banco.
 
+## D08 MT5 adiado pelo Matheus
+- **Contexto:** em 2026-11-25 ele pediu para pular o MT5 por enquanto, com o importador já pronto.
+- **Decisão:** o importador fica no app como está (testado com relatórios de exemplo); a conferência com um relatório real (P03) sai da lista ativa.
+- **Por quê:** apagar código pronto e testado não ganha nada; só não se gasta mais tempo nele agora.
+- **Como reverter:** retomar a P03 quando quiser.
+
 ## D07 Importação de antes da configuração dos limites
 - **Contexto:** testando a tela, o relatório trouxe operações de 23 e 24/11 e os limites foram configurados em 25/11. O banco recusava com "Defina o risco por operação".
 - **Decisão:** operação importada com data anterior à primeira configuração de limites entra sem violação, porque não havia trava vigente. O registro manual continua exigindo a configuração.

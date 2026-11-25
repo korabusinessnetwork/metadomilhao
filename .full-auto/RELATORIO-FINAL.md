@@ -28,7 +28,7 @@ npm install && supabase start && npm run dev
 ## Suas pendências (em ordem)
 1. P01 Criar o projeto Supabase e publicar na Vercel, cerca de 30 min (README, seção Publicar).
 2. P02 Ligar a revisão de notícias de verdade: conferir preços, cadastrar a chave e o segredo, rodar o agendamento, cerca de 15 min.
-3. P03 Mandar um relatório real do MT5 para conferir o importador, 5 min.
+3. P03 Relatório real do MT5: adiada por você em 25/11. O importador fica no app, conferido só com relatórios de exemplo.
 4. P04 Conferir os feriados de 2027 com a B3, 10 min.
 5. P05 Instalar o app no celular depois da P01, 5 min.
 6. P06 Decidir se o visual cartoon entra no app.

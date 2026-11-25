@@ -41,7 +41,7 @@
 - [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem
 
 ## Fase 4, Integrações
-- [x] Importar operações do MT5: relatório HTML vira rascunho, contexto completado e confirmação em ordem pelo banco (falta conferir com um relatório real)
+- [x] Importar operações do MT5: relatório HTML vira rascunho, contexto completado e confirmação em ordem pelo banco (conferência com relatório real adiada pelo dono em 25/11/2026)
 - [x] Fila offline de lançamentos: gasto sem internet fica no aparelho, sobe sozinho, não duplica, recusa fica visível
 
 ## Ideias (não priorizadas)

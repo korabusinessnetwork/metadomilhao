@@ -60,6 +60,9 @@
 - **Sem retentativa automática do Supabase (`db.retry: false`):** ver BUG-007.
 - **Trade, orçamento e carteira continuam exigindo conexão:** travas e regras rodam no banco, então não faz sentido aceitar operação offline.
 
+## Decisões do modo Full Automático (2026-11-25)
+Registradas em `.full-auto/DECISOES.md` (D01 a D07). As de produto: importação do MT5 vira rascunho confirmado em ordem (D04), histórico de antes da configuração dos limites entra sem violação (D07), regra da P-03 mantida (D06).
+
 ## Em aberto
 - P-03 com mês fechado de gasto zero zera a meta da reserva. Decidir se mês sem gasto entra na média.
 - Regra exata de meta de lucro diária (M-10) a validar após 30 dias de operação real.

@@ -15,4 +15,4 @@ O que só o Matheus pode fazer está em `PENDENCIAS-DO-MATHEUS.md`, não aqui.
 - [x] T05 Projeto pronto para deploy na Vercel | trilha: pwa | depende: T04 | pronto quando: `vercel.json` com reescrita de SPA e cabeçalhos de segurança, rota profunda abre no `vite preview`, README com o passo a passo de publicação
 
 ## Fase C: Encerramento
-- [~] T06 Verificação final e relatório | trilha: base | depende: todas | pronto quando: instalação limpa, typecheck, testes de cliente, testes de banco, ponta a ponta da IA e fluxo principal no navegador passam, e `RELATORIO-FINAL.md` escrito
+- [x] T06 Verificação final e relatório | trilha: base | depende: todas | pronto quando: instalação limpa, typecheck, testes de cliente, testes de banco, ponta a ponta da IA e fluxo principal no navegador passam, e `RELATORIO-FINAL.md` escrito

@@ -18,7 +18,7 @@
 - [x] Metas mensais e anuais (M-01 a M-06)
 - [x] Exportação CSV
 - [x] PWA instalável no celular e no PC (manifesto e service worker no build)
-- [ ] Criar o projeto Supabase na nuvem, aplicar a migration e publicar na Vercel
+- [ ] Criar o projeto Supabase na nuvem, aplicar as migrations e publicar na Vercel (projeto pronto: `vercel.json` e README, seção Publicar)
 - [ ] Testar a instalação do PWA no celular de verdade
 
 ## Fase 2, Diário de trade
@@ -41,7 +41,7 @@
 - [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem
 
 ## Fase 4, Integrações
-- [ ] Importar operações do MT5 (aguardando um relatório exportado de exemplo)
+- [x] Importar operações do MT5: relatório HTML vira rascunho, contexto completado e confirmação em ordem pelo banco (falta conferir com um relatório real)
 - [x] Fila offline de lançamentos: gasto sem internet fica no aparelho, sobe sozinho, não duplica, recusa fica visível
 
 ## Ideias (não priorizadas)

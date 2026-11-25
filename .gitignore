@@ -9,3 +9,5 @@ supabase/.temp
 *.log
 supabase/functions/.env
 tsconfig.tsbuildinfo
+.full-auto/.vigia.lock
+.full-auto/vigia.log

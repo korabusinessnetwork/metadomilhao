@@ -3,14 +3,14 @@
 Coisas que só você pode fazer. O app já funciona com contornos (Supabase local, API do Claude falsa), estas tarefas trocam o contorno pelo real.
 Ordem: da mais importante para a menos importante.
 
-## P01 Criar a sua conta de acesso no app publicado [prioridade: alta]
+## ~~P01 Criar a sua conta de acesso no app publicado~~ [resolvida em 26/11/2026: conta criada pelo Matheus]
 - **Feito pelo Claude em 2026-11-26:** projeto Supabase `rota-do-milhao` (ref `pggoncwoeyjhicgcbxye`, São Paulo, plano Free) com as 7 migrations; login com cadastro público desligado, senha mínima de 12 com letras, números e símbolos (sem segundo fator desde 26/11, ADR-005); app publicado na Vercel em https://rota-do-milhao-ochre.vercel.app com só a URL e a anon key. A senha do banco ficou em `.env.local` (`SUPABASE_DB_SENHA_PRODUCAO`), fora do git.
 - **Falta (só você, porque a senha é sua):**
   1. Painel do Supabase, projeto `rota-do-milhao`, Authentication, Users, Add user, Create new user.
   2. Seu e-mail, uma senha forte (12+ com letras, números e símbolos) e marque "Auto Confirm User".
 - **Como confirmar que funcionou:** abrir https://rota-do-milhao-ochre.vercel.app, entrar com e-mail e senha e lançar um gasto.
 
-## P02 Ligar a revisão de notícias de verdade [prioridade: alta]
+## P02 Ligar a revisão de notícias de verdade [ADIADA pelo Matheus em 2026-11-26: ainda sem créditos na API do Claude]
 - **Por quê:** a função está pronta e testada, mas nunca chamou a IA real.
 - **Contorno atual:** API falsa local (`scripts/api-falsa-anthropic.mjs`).
 - **Passo a passo:**

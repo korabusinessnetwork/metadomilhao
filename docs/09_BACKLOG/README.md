@@ -8,7 +8,7 @@
 - [ ] Revisar estas regras de negócio uma vez antes do código
 
 ## Fase 1, MVP financeiro (mês 1 após a mudança)
-- [x] Supabase: Auth com MFA, schema da modelagem com RLS (local; falta criar o projeto na nuvem)
+- [x] Supabase: Auth com e-mail e senha (sem segundo fator desde o ADR-005), schema da modelagem com RLS
 - [x] Orçamento mensal e categorias
 - [x] Lançamentos rápidos (meta: menos de 20 s; 3 toques no teste)
 - [x] Limite de gasto diário (M-07 a M-09)
@@ -38,7 +38,7 @@
 - [x] Trava de custo e painel de uso (IA-03)
 - [x] Vínculo da revisão com a operação (IA-05) e comparação nas estatísticas
 - [ ] Conferir os feriados de 2027 com o calendário oficial da B3 e marcar `confirmado`
-- [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem
+- [ ] Cadastrar `ANTHROPIC_API_KEY` e `CRON_SEGREDO` como secrets, conferir preços e rodar o agendamento no projeto na nuvem (adiado em 26/11/2026: sem créditos na API)
 
 ## Fase 4, Integrações
 - [x] Importar operações do MT5: relatório HTML vira rascunho, contexto completado e confirmação em ordem pelo banco (conferência com relatório real adiada pelo dono em 25/11/2026)

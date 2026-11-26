@@ -7,6 +7,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // O registro vem do src/main.tsx (virtual:pwa-register), que recarrega a página quando sai versão nova (BUG-008)
+      injectRegister: false,
       includeAssets: ['icone.svg'],
       manifest: {
         name: 'Rota do Milhão',
@@ -26,6 +28,9 @@ export default defineConfig({
       workbox: {
         // Dado financeiro não é cacheado: só os arquivos do app.
         navigateFallback: '/index.html',
+        // Com injectRegister: false o plugin não liga estes dois sozinho; sem eles a versão nova fica esperando (BUG-008).
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [],
       },
     }),

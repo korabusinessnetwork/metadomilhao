@@ -62,15 +62,6 @@ function iguaisEmTempoConstante(a: string, b: string): boolean {
   return d === 0
 }
 
-function nivelDoJwt(jwt: string): string | null {
-  try {
-    const payload = JSON.parse(atob(jwt.split('.')[1]!.replace(/-/g, '+').replace(/_/g, '/')))
-    return typeof payload.aal === 'string' ? payload.aal : null
-  } catch {
-    return null
-  }
-}
-
 interface ResultadoChamada {
   texto: string
   uso: Uso
@@ -231,12 +222,11 @@ Deno.serve(async (req) => {
       return resposta({ resultados })
     }
 
-    // Disparo manual: JWT do dono com segundo fator (aal2)
+    // Disparo manual: JWT do dono (ADR-005: sem exigir segundo fator)
     const jwt = req.headers.get('Authorization')?.replace(/^Bearer\s+/i, '') ?? ''
     if (!jwt) return erroHttp('nao_autorizado', 'Entre de novo.', 401)
     const { data: usuario, error: erroUsuario } = await admin.auth.getUser(jwt)
     if (erroUsuario || !usuario.user) return erroHttp('nao_autorizado', 'Entre de novo.', 401)
-    if (nivelDoJwt(jwt) !== 'aal2') return erroHttp('sem_mfa', 'Confirme o segundo fator.', 403)
     return resposta(await processarUsuario(admin, usuario.user.id, hoje, 'manual'))
   } catch (e) {
     console.error('revisao-noticias falhou:', e instanceof Error ? e.message : 'erro desconhecido')

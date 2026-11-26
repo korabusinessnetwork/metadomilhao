@@ -15,6 +15,7 @@
 | ADR-002 | Usuário único, sem multi-tenant | Aceito | 2026-11-25 |
 | ADR-003 | Travas de risco aplicadas no banco, sem esconder violações | Aceito | 2026-11-25 |
 | ADR-004 | Revisão de notícias pré-pregão com a API do Claude, com teto de custo | Aceito | 2026-11-25 |
+| ADR-005 | Login só com e-mail e senha, sem segundo fator | Aceito | 2026-11-26 |
 
 ## Decisões de produto registradas fora de ADR
 - Sistemática começa na data de mudança configurada no perfil (F-01, F-02).
@@ -23,7 +24,7 @@
 - Ativos: ações e mini-índice.
 
 ## Decisões da Fase 1 (2026-11-25)
-- **MFA exigido no banco:** o RLS só libera linhas para sessão `aal2` (função `e_dono`). Senha vazada sozinha não lê nada.
+- ~~MFA exigido no banco~~ substituído pela ADR-005 (2026-11-26): login só com e-mail e senha; `e_dono` exige só ser o dono.
 - **Só inclusão no banco:** `lancamento`, `movimento_carteira` e `fechamento_mes` não têm privilégio de update/delete. Correção = estorno, ajuste de saldo ou fechamento substituto.
 - **Privilégios explícitos:** a migration revoga tudo e concede tabela a tabela (o Supabase novo não concede mais por padrão).
 - **Schema em migrations:** `supabase/migrations/` substitui o `supabase/schema.sql` citado no CLAUDE.md.

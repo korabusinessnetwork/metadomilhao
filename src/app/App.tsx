@@ -3,7 +3,6 @@ import { ProvedorSessao, useSessao } from '../contexto/SessaoContexto'
 import { configurado } from '../lib/supabase'
 import { Carregando, ErroComAcao } from '../componentes/Basicos'
 import { Entrar } from '../features/auth/Entrar'
-import { SegundoFator } from '../features/auth/SegundoFator'
 import { ConfiguracaoInicial } from '../features/config/ConfiguracaoInicial'
 import { Configuracoes } from '../features/config/Configuracoes'
 import { Hoje } from '../features/metas/Hoje'
@@ -21,12 +20,11 @@ import { IR } from '../features/trade/IR'
 import { Noticias } from '../features/noticias/Noticias'
 import { ImportarMt5 } from '../features/trade/ImportarMt5'
 
-/** Rota protegida: só renderiza o app depois da sessão, do segundo fator e do perfil (docs/11_SEGURANCA). */
+/** Rota protegida: só renderiza o app depois da sessão e do perfil (docs/11_SEGURANCA, ADR-005). */
 function Portao() {
   const { estado, erro, atualizar } = useSessao()
   if (estado === 'carregando') return <main className="tela-centro"><Carregando /></main>
   if (estado === 'sem_sessao') return <Entrar />
-  if (estado === 'precisa_mfa') return <SegundoFator />
   if (estado === 'erro') return <main className="tela-centro"><ErroComAcao erro={erro ?? ''} tentarDeNovo={atualizar} /></main>
   if (estado === 'sem_perfil') return <ConfiguracaoInicial />
   return (

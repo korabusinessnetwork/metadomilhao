@@ -9,11 +9,10 @@ import { MENSAGEM_SEM_CONEXAO } from '../lib/services/resultado'
 /**
  * Estados da sessão:
  * - sem_sessao: precisa entrar com e-mail e senha
- * - precisa_mfa: entrou com senha, falta o segundo fator (o banco só libera dados em aal2)
- * - sem_perfil: MFA ok, falta a configuração inicial
+ * - sem_perfil: entrou, falta a configuração inicial
  * - pronta: tudo carregado
  */
-export type EstadoSessao = 'carregando' | 'sem_sessao' | 'precisa_mfa' | 'sem_perfil' | 'pronta' | 'erro'
+export type EstadoSessao = 'carregando' | 'sem_sessao' | 'sem_perfil' | 'pronta' | 'erro'
 
 interface ValorSessao {
   estado: EstadoSessao
@@ -40,11 +39,7 @@ export function ProvedorSessao({ children }: { children: ReactNode }) {
       setEstado('sem_sessao')
       return
     }
-    const { data: nivel, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-    if (error || nivel?.currentLevel !== 'aal2') {
-      setEstado('precisa_mfa')
-      return
-    }
+    // ADR-005: login só com e-mail e senha, sem segundo fator
     const [p, pl] = await Promise.all([obterPerfil(), obterPlano()])
     if (p.erro !== null || pl.erro !== null) {
       // Sem conexão: abre com o último perfil bom guardado no aparelho (fila offline, Fase 4)

@@ -4,7 +4,7 @@ import { executar, traduzirErro } from './resultado'
 describe('tratamento de erro dos serviços', () => {
   it('repassa a mensagem dos nossos triggers e traduz códigos do Postgres', () => {
     expect(traduzirErro({ code: 'P0001', message: 'Este mês já foi fechado.' })).toBe('Este mês já foi fechado.')
-    expect(traduzirErro({ code: '42501', message: 'new row violates row-level security policy' })).toBe('Sem permissão. Entre de novo com o segundo fator.')
+    expect(traduzirErro({ code: '42501', message: 'new row violates row-level security policy' })).toBe('Sem permissão. Entre de novo.')
     expect(traduzirErro({ code: 'XX000', message: 'saldo 1234 detalhe interno' })).toBe('Algo deu errado. Tente de novo.')
   })
 

@@ -11,7 +11,7 @@ const MENSAGENS: Record<string, string> = {
   '23505': 'Esse registro já existe.',
   '23514': 'Algum valor está fora do permitido.',
   '23503': 'Esse item está em uso e não pode ser removido.',
-  '42501': 'Sem permissão. Entre de novo com o segundo fator.',
+  '42501': 'Sem permissão. Entre de novo.',
   PGRST301: 'Sua sessão expirou. Entre de novo.',
 }
 

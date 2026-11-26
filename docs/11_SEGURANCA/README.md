@@ -5,7 +5,7 @@ Dado financeiro pessoal. Ameaça principal: vazamento por configuração errada 
 ## Por camada
 | Camada | Controle |
 |---|---|
-| Autenticação | Supabase Auth, só a conta do dono, cadastro público desativado, senha forte + MFA (TOTP) ativado |
+| Autenticação | Supabase Auth, só a conta do dono, cadastro público desativado, senha forte (12+ com letras, números e símbolos). Sem segundo fator por decisão do dono (ADR-005) |
 | Autorização | RLS `user_id = auth.uid()` em toda tabela, nas 4 operações |
 | Banco | Travas em trigger (ADR-003); `fechamento_mes` imutável; constraints de valor e enum |
 | Edge Functions | Verificação de JWT em chamadas manuais; cron com segredo próprio; `ANTHROPIC_API_KEY` só como secret |

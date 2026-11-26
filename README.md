@@ -16,7 +16,7 @@ cp .env.example .env.local   # preencha com API_URL e ANON_KEY de `supabase stat
 npm run dev
 ```
 
-O cadastro público é desligado. No ambiente local, crie o usuário com `scripts/criar-usuario-local.mjs` (instruções no próprio arquivo). No primeiro acesso o app pede o segundo fator (TOTP): sem ele, o banco não libera nenhum dado.
+O cadastro público é desligado. No ambiente local, crie o usuário com `scripts/criar-usuario-local.mjs` (instruções no próprio arquivo). O login é só com e-mail e senha (ADR-005).
 
 ## Revisão de notícias (Fase 3)
 
@@ -32,7 +32,7 @@ Em produção: `supabase secrets set --env-file supabase/functions/.env`, `supab
 
 ```bash
 npm test            # regras puras (M, P, PL, O, F, T, TR, IR, IA), dinheiro, datas, CSV
-npm run test:db     # banco: RLS, MFA, só inclusão, estorno, fechamento, O-02, travas (ADR-003), T-04, T-08, P-02, P-04, calendário, IA-01, IA-05
+npm run test:db     # banco: RLS, só inclusão, estorno, fechamento, O-02, travas (ADR-003), T-04, T-08, P-02, P-04, calendário, IA-01, IA-05
 npm run build       # typecheck + build do PWA
 ```
 
@@ -46,7 +46,7 @@ Em produção desde 26/11/2026: https://rota-do-milhao-ochre.vercel.app (Supabas
    supabase link --project-ref <ref-do-projeto>
    supabase db push            # aplica as migrations de supabase/migrations
    ```
-2. **Auth, no painel do Supabase:** desligar "Allow new users to sign up"; senha mínima de 12 com letras, números e símbolos; ligar MFA TOTP. Criar a conta do dono em Authentication, Users, Add user. No primeiro acesso o app pede o segundo fator.
+2. **Auth, no painel do Supabase:** desligar "Allow new users to sign up"; senha mínima de 12 com letras, números e símbolos. Criar a conta do dono em Authentication, Users, Add user (com "Auto Confirm User").
 3. **Vercel:** importar o repositório do GitHub (o `vercel.json` já traz build, reescrita de rotas e cabeçalhos de segurança). Em Environment Variables, só `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (Project Settings, API, no Supabase). Nunca a service_role.
 4. **Revisão de notícias:** ver "Revisão de notícias" acima (secrets, deploy da função e `supabase/agendamento.sql`). Trocar `ORIGEM_APP` pela URL da Vercel.
 5. **Conferir antes de publicar:** `npm run build && node scripts/servir-como-vercel.mjs 5182 http://127.0.0.1:55321` serve o build com os mesmos cabeçalhos; o console do navegador não deve mostrar bloqueio de CSP.

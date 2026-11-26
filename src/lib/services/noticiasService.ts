@@ -45,7 +45,7 @@ export async function feriadosNacionais(): Promise<Resultado<string[]>> {
   return ok(r.dados.map((f) => f.data))
 }
 
-/** Disparo manual (conta para o teto, IA-03). A Edge Function exige o JWT com segundo fator. */
+/** Disparo manual (conta para o teto, IA-03). A Edge Function exige o JWT do dono. */
 export async function gerarAgora(): Promise<Resultado<{ status: string }>> {
   try {
     const { data, error } = await supabase.functions.invoke('revisao-noticias', { method: 'POST', body: {} })

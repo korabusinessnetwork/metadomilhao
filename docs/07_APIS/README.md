@@ -20,7 +20,7 @@ O cliente fala com o Supabase pelo SDK, sempre via `src/lib/services`. Edge Func
 - Passos: verifica teto (IA-03), monta o prompt (`docs/10_PROMPTS`), chama a API, valida o JSON, salva `revisao_noticias` e soma `uso_ia`.
 - Saída: `{ id, status: "ok" | "sem_orcamento" | "erro" }`.
 - Secrets: `ANTHROPIC_API_KEY`, `CRON_SEGREDO`. Configuração: `MODELO_REVISAO` (padrão `claude-haiku-5-5`), `MAX_TOKENS_SAIDA`, `MAX_BUSCAS`, `TETO_MENSAL_CENTAVOS=3000`, `ESFORCO`, `PRECO_ENTRADA_USD_MTOK`, `PRECO_SAIDA_USD_MTOK`, `PRECO_BUSCA_USD`, `COTACAO_USD_BRL`, `ORIGEM_APP`. Modelo em `supabase/functions/.env.example`.
-- Acesso: o cron manda o cabeçalho `x-segredo-cron`; o disparo manual manda o JWT do dono, que precisa estar em `aal2`. `verify_jwt` fica desligado porque a função valida por conta própria.
+- Acesso: o cron manda o cabeçalho `x-segredo-cron`; o disparo manual manda o JWT do dono (sem exigir segundo fator, ADR-005). `verify_jwt` fica desligado porque a função valida por conta própria.
 - Saída manual: `{ id, status: "ok" | "sem_orcamento" | "erro" | "sem_watchlist" }`. Agendada: `{ resultados: [...] }` ou `{ status: "sem_pregao" }`.
 
 ### `fechamento-mensal` e `abrir-dia-trade` (não criadas)

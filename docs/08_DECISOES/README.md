@@ -8,3 +8,4 @@
 | [ADR-004](ADR-004-revisao-noticias-ia.md) | Revisão de notícias pré-pregão com a API do Claude, com teto de custo | Aceito |
 
 Novo ADR: copie `adr-000-template.md`, use o próximo número, atualize esta tabela e `memory/decisions.md`.
+- ADR-005: Login só com e-mail e senha, sem segundo fator (2026-11-26)

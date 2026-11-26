@@ -2,7 +2,7 @@
 -- Rodar com: supabase test db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(38);
+select plan(39);
 
 -- Dois usuários: A (dono) e B (usuário de teste que deve ver zero linhas)
 insert into auth.users (id, email, aud, role)
@@ -147,10 +147,12 @@ select pg_temp.sair();
 select is((select count(*) from public.categoria where nome = 'x'), 0::bigint, 'RLS: update de B não alcança A');
 select is((select count(*) from public.ativo_carteira where user_id = '00000000-0000-0000-0000-0000000000a1'), 1::bigint, 'RLS: delete de B não alcança A');
 
--- ---------- MFA: o próprio dono sem segundo fator não vê nada ----------
+-- ---------- ADR-005: login só com e-mail e senha (sessão aal1) acessa os próprios dados ----------
 select pg_temp.entrar('00000000-0000-0000-0000-0000000000a1', 'aal1');
-select is((select count(*) from public.lancamento) + (select count(*) from public.categoria), 0::bigint, 'MFA: sessão aal1 do dono vê zero linhas');
-select throws_ok($$ insert into public.categoria (nome, tipo) values ('Sem MFA', 'fixa') $$, '42501', null, 'MFA: sessão aal1 não grava');
+select is((select count(*) from public.categoria) > 0, true, 'ADR-005: sessão só com senha do dono lê os próprios dados');
+select lives_ok($$ insert into public.categoria (nome, tipo) values ('Só com senha', 'fixa') $$, 'ADR-005: sessão só com senha do dono grava');
+select pg_temp.entrar('00000000-0000-0000-0000-0000000000b2', 'aal1');
+select is((select count(*) from public.categoria), 0::bigint, 'ADR-005: sem o segundo fator, o isolamento entre donos continua');
 select pg_temp.sair();
 
 -- ---------- Papel anônimo não acessa nada ----------

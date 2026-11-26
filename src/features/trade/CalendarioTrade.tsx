@@ -122,7 +122,7 @@ export function CalendarioTrade({
               </div>
             ))}
           </div>
-          <p className="pequeno mut">No quadrado, o líquido do dia em reais, arredondado. Toque no dia para ver as operações com centavos.</p>
+          <p className="pequeno mut">Toque num dia para ver as operações com centavos ou registrar. No quadrado, o líquido do dia em reais, arredondado.</p>
         </>
       )}
     </section>

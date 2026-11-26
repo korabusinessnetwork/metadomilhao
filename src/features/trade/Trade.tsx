@@ -13,7 +13,7 @@ import { DiaPassado } from './DiaPassado'
 import { EncerrarOperacao, NotaDoDia, TabelaOperacoes } from './PartesDoDia'
 import './trade.css'
 
-/** Trade (docs/06_COMPONENTES): status das travas de hoje, calendário do mês (T-10) e o dia escolhido. */
+/** Trade (docs/06_COMPONENTES, T-10): a tela é o calendário do mês; tocar num dia abre o detalhe dele embaixo. */
 export function Trade() {
   const hoje = dataEmSaoPaulo()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
@@ -27,7 +27,7 @@ export function Trade() {
   }, [hoje])
   const [mensagem, setMensagem] = useState<{ tipo: 'erro' | 'sucesso'; texto: string } | null>(null)
   const [mostrarViolacao, setMostrarViolacao] = useState(false)
-  const [diaEscolhido, setDiaEscolhido] = useState(hoje)
+  const [diaEscolhido, setDiaEscolhido] = useState<string | null>(null)
   const [mesVisivel, setMesVisivel] = useState(() => inicioDoMes(hoje))
   // Sobe a cada registro, para o calendário recarregar o mês
   const [versao, setVersao] = useState(0)
@@ -35,17 +35,8 @@ export function Trade() {
   if (carregando) return <Carregando />
   if (erro || !dados) return <ErroComAcao erro={erro ?? ''} tentarDeNovo={recarregar} />
 
-  if (!dados.status || dados.setups.length === 0)
-    return (
-      <>
-        <h1>Trade</h1>
-        <EstadoVazio
-          mensagem="Antes da primeira operação: escolha o ativo de capital de trade, o risco por operação e cadastre pelo menos um setup."
-          acao={<Link className="botao" to="/trade/configurar">Configurar trade</Link>}
-        />
-      </>
-    )
-
+  // Sem configuração o calendário aparece do mesmo jeito; só o registro pede configurar antes
+  const configurado = dados.status !== null && dados.setups.length > 0
   const s = dados.status
   const abertas = dados.ops.filter((o) => o.preco_saida === null)
   const fechadas = dados.ops.filter((o) => o.preco_saida !== null)
@@ -76,13 +67,13 @@ export function Trade() {
         </div>
       </div>
 
-      {!s.aberto && s.motivo && <FaixaTrava motivo={s.motivo} reabreEm={s.reabre_em} />}
+      {s && !s.aberto && s.motivo && <FaixaTrava motivo={s.motivo} reabreEm={s.reabre_em} />}
       {mensagem && <Aviso tipo={mensagem.tipo}>{mensagem.texto}</Aviso>}
 
       <CalendarioTrade
         mes={mesVisivel}
         hoje={hoje}
-        escolhido={diaEscolhido}
+        escolhido={diaEscolhido ?? ''}
         versao={versao}
         aoEscolher={(d) => {
           setDiaEscolhido(d)
@@ -91,13 +82,21 @@ export function Trade() {
         aoMudarMes={setMesVisivel}
       />
 
-      {diaEscolhido !== hoje ? (
+      {diaEscolhido !== null && (
+        <div className="acoes" style={{ marginTop: 0, marginBottom: 16 }}>
+          <button type="button" className="botao secundario" onClick={() => setDiaEscolhido(null)}>
+            Fechar o dia
+          </button>
+        </div>
+      )}
+
+      {diaEscolhido === null ? null : !configurado || !s ? (
+        <EstadoVazio
+          mensagem="Antes da primeira operação: escolha o ativo de capital de trade, o risco por operação e cadastre pelo menos um setup."
+          acao={<Link className="botao" to="/trade/configurar">Configurar trade</Link>}
+        />
+      ) : diaEscolhido !== hoje ? (
         <>
-          <div className="acoes" style={{ marginTop: 0, marginBottom: 16 }}>
-            <button type="button" className="botao secundario" onClick={() => { setDiaEscolhido(hoje); setMesVisivel(inicioDoMes(hoje)) }}>
-              Voltar para hoje
-            </button>
-          </div>
           <DiaPassado
             key={diaEscolhido}
             dia={diaEscolhido}

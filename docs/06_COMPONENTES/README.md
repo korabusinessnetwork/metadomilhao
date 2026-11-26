@@ -9,7 +9,7 @@
 | Plano | `plano` | Curva real × projetada, cenários, metas anuais | 1 |
 | Patrimônio | `patrimonio` | Ativos por classe, reserva, movimentos | 1 |
 | Fechamento | `metas` | Fluxo de fechamento mensal | 1 |
-| Trade, dia | `trade` | Calendário do mês (segunda a sexta, líquido por dia, T-10) no topo; ao tocar num dia: hoje mostra status das travas, formulário e operações; dia passado mostra o resultado e a trava daquele dia, as operações e o registro posterior | 2 |
+| Trade, dia | `trade` | A tela é o calendário do mês (segunda a sexta, líquido por dia, T-10), aparece mesmo sem o trade configurado; ao tocar num dia abre o detalhe embaixo: hoje mostra status das travas, formulário e operações; dia passado mostra o resultado e a trava daquele dia, as operações e o registro posterior | 2 |
 | Trade, estatísticas | `trade` | Acerto, payoff, expectativa, drawdown, por setup e timeframe | 2 |
 | IR | `trade` | Apuração mensal, DARF estimado | 2 |
 | Notícias | `noticias` | Revisão do dia, histórico, watchlist, uso do teto | 3 |

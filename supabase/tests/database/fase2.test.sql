@@ -150,9 +150,11 @@ select pg_temp.entrar('00000000-0000-0000-0000-0000000000c3');-- Capital de C: R
 select pg_temp.op('2026-06-10 02:30:00+00', saida => 100000);
 select is((select data from public.operacao order by criado_em desc limit 1), '2026-06-09'::date, 'fuso: a virada do dia é à meia-noite de Brasília');
 
--- Domingo 07/06 é da semana anterior; a semana começa na segunda 08/06
-select pg_temp.op('2026-06-07 15:00:00-03', saida => 99975); -- −5
-select is((select resultado_semana_centavos from public.status_travas('2026-06-08')), 0::bigint, 'semana começa na segunda: o domingo fica fora');
+-- Sexta 05/06 é da semana anterior; a semana começa na segunda 08/06.
+-- (Até a T-10 este teste usava um domingo; agora domingo nem entra, porque não há pregão.)
+select throws_ok($$ select pg_temp.op('2026-06-07 15:00:00-03', saida => 99975) $$, 'P0001', 'Nesse dia não houve pregão na B3.', 'T-10: domingo não teve pregão');
+select pg_temp.op('2026-06-05 15:00:00-03', saida => 99975); -- −5
+select is((select resultado_semana_centavos from public.status_travas('2026-06-08')), 0::bigint, 'semana começa na segunda: a sexta anterior fica fora');
 
 -- Capital na segunda = 99500, perda semanal = 2985. Três dias de −11 sem fechar nenhum dia.
 select pg_temp.op('2026-06-08 10:00:00-03', saida => 99970); -- −6
@@ -166,7 +168,7 @@ select pg_temp.op('2026-06-10 11:00:00-03', saida => 99975);
 select is((select perda_semana_centavos from public.status_travas('2026-06-10')), 2985::bigint, 'M-12: 3% do capital do início da semana');
 select is((select motivo from public.status_travas('2026-06-10')), 'perda_semana', 'M-12: perda de 3% na semana fecha a semana');
 select is((select reabre_em from public.status_travas('2026-06-10')), '2026-06-15'::date, 'a semana reabre na segunda seguinte');
-select throws_matching($$ select pg_temp.op('2026-06-11 10:00:00-03') $$, 'Limite de perda da semana atingido', 'TR-02: semana fechada recusa operação');
+select throws_matching($$ select pg_temp.op('2026-06-11 10:00:00-03', saida => 100000) $$, 'Limite de perda da semana atingido', 'TR-02: semana fechada recusa operação');
 select is((select aberto from public.status_travas('2026-06-15')), true, 'nova semana, diário aberto');
 select throws_ok($$ select pg_temp.op('2026-06-15 10:00:00-03', saida => 100060, violacao => true) $$,
   'P0001', 'O período está aberto: registre como operação normal.', 'violação só existe com o período fechado');

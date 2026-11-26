@@ -107,9 +107,9 @@ select lives_ok($$ select public.confirmar_importacao_mt5('80000000-0000-0000-00
 select is((select violacao_trava from public.operacao where aberta_em = '2019-06-03T10:00:00-03:00'), false, 'D07: sem trava vigente naquela data, não é violação');
 -- O registro manual continua exigindo a configuração
 select throws_ok($$
-  insert into public.operacao (aberta_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, multiplicador, risco_centavos,
+  insert into public.operacao (aberta_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, preco_saida, multiplicador, risco_centavos,
     setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia)
-  values ('2019-06-03T11:00:00-03:00', 'WINJ27', 'mini_indice', 'compra', 1, 128500, 128450, 128600, 1, 1, (select id from public.setup limit 1), 'alta', 'alta', 'alta', '5m', false) $$,
+  values ('2019-06-03T11:00:00-03:00', 'WINJ27', 'mini_indice', 'compra', 1, 128500, 128450, 128600, 128550, 1, 1, (select id from public.setup limit 1), 'alta', 'alta', 'alta', '5m', false) $$,
   'P0001', 'Defina o risco por operação antes de registrar.', 'o registro manual continua exigindo os limites');
 select pg_temp.sair();
 select pg_temp.entrar('00000000-0000-0000-0000-0000000000b2');

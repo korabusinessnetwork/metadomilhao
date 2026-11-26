@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { mercadoDoAtivo, paraPreco, riscoCentavos, PCT_RISCO_MAXIMO, type Direcao, type Mercado, type Tendencia, type Timeframe, type PlanoOperacao } from '../../lib/calculos/trade'
-import { registrarOperacao, registrarViolacao } from '../../lib/services/tradeService'
+import { registrarOperacao, registrarPosterior, registrarViolacao } from '../../lib/services/tradeService'
+import { abertaEmDoDia } from '../../lib/calculos/calendarioTrade'
 import { paraCentavos } from '../../lib/calculos/dinheiro'
 import type { Setup } from '../../lib/tipos'
 import { Aviso, Dinheiro } from '../../componentes/Basicos'
@@ -31,18 +32,25 @@ export function Preco({ id, rotulo, texto, aoMudar }: { id: string; rotulo: stri
   )
 }
 
+const dataBr = (d: string) => d.split('-').reverse().join('/')
+
 /**
  * Registro de operação (docs/05_FLUXOS). modo 'planejada' passa pela trava e por T-04;
- * modo 'violacao' registra o que já foi executado com o período fechado (TR-03).
+ * modo 'violacao' registra o que já foi executado com o período fechado (TR-03);
+ * modo 'posterior' registra, num dia passado, o que já foi executado com o período aberto (T-10).
+ * Com `dia`, a operação vai para aquele dia e pede a hora da entrada.
  */
 export function FormularioOperacao({
   modo,
+  dia,
   setups,
   capitalCentavos,
   revisaoHojeId,
   aoSalvar,
 }: {
-  modo: 'planejada' | 'violacao'
+  modo: 'planejada' | 'violacao' | 'posterior'
+  /** Dia passado (AAAA-MM-DD). Sem ele, a operação é de agora. */
+  dia?: string
   setups: Setup[]
   capitalCentavos: number
   /** IA-05: revisão de notícias ok de hoje, se houver */
@@ -50,6 +58,8 @@ export function FormularioOperacao({
   aoSalvar: (texto: string) => void
 }) {
   const [ativo, setAtivo] = useState('')
+  const [hora, setHora] = useState('')
+  const [seguiu, setSeguiu] = useState(true)
   const [mercado, setMercado] = useState<Mercado>('mini_indice')
   const [direcao, setDirecao] = useState<Direcao | ''>('')
   const [quantidade, setQuantidade] = useState('1')
@@ -81,7 +91,9 @@ export function FormularioOperacao({
   async function aoEnviar(e: FormEvent) {
     e.preventDefault()
     if (!direcao) return setErro('Escolha compra ou venda.')
-    const plano: PlanoOperacao & { ativo: string; revisaoNoticiasId: string | null } = {
+    const abertaEm = dia ? abertaEmDoDia(dia, hora) : undefined
+    if (abertaEm === null) return setErro('Informe a hora da entrada (ex.: 10:15).')
+    const plano: PlanoOperacao & { ativo: string; revisaoNoticiasId: string | null; abertaEm?: string } = {
       ativo,
       mercado,
       direcao,
@@ -98,13 +110,17 @@ export function FormularioOperacao({
       teveNoticia,
       noticiaDescricao: noticia,
       revisaoNoticiasId: revisaoHojeId && vincularRevisao ? revisaoHojeId : null,
+      abertaEm,
     }
+    const custosCentavos = custos ? (paraCentavos(custos) ?? -1) : 0
     setEnviando(true)
     setErro(null)
     const r =
       modo === 'planejada'
         ? await registrarOperacao(plano)
-        : await registrarViolacao({ ...plano, saida: paraPreco(saida) ?? NaN, custosCentavos: custos ? (paraCentavos(custos) ?? -1) : 0, observacao })
+        : modo === 'posterior'
+          ? await registrarPosterior({ ...plano, abertaEm: abertaEm!, saida: paraPreco(saida) ?? NaN, custosCentavos, seguiuPlano: seguiu, observacao })
+          : await registrarViolacao({ ...plano, saida: paraPreco(saida) ?? NaN, custosCentavos, observacao })
     setEnviando(false)
     if (r.erro !== null) return setErro(r.erro)
     setEntrada('')
@@ -114,19 +130,41 @@ export function FormularioOperacao({
     setCustos('')
     setObservacao('')
     setConfirmado(false)
-    aoSalvar(modo === 'planejada' ? 'Operação planejada registrada. Ao sair, registre a saída.' : 'Violação registrada. Ela aparece nas estatísticas e no fechamento.')
+    setHora('')
+    aoSalvar(
+      modo === 'planejada'
+        ? 'Operação planejada registrada. Ao sair, registre a saída.'
+        : modo === 'posterior'
+          ? `Operação de ${dataBr(dia ?? '')} registrada. Ela fica marcada como registrada depois.`
+          : 'Violação registrada. Ela aparece nas estatísticas e no fechamento.',
+    )
   }
 
   const ativos = setups.filter((s) => s.ativo)
 
   return (
     <form className="painel" onSubmit={aoEnviar}>
-      <h2>{modo === 'planejada' ? 'Planejar operação' : 'Registrar operação já executada (violação)'}</h2>
+      <h2>
+        {modo === 'planejada'
+          ? 'Planejar operação'
+          : modo === 'posterior'
+            ? `Registrar operação de ${dataBr(dia ?? '')}`
+            : `Registrar operação já executada (violação)${dia ? ` em ${dataBr(dia)}` : ''}`}
+      </h2>
       {modo === 'violacao' && (
         <Aviso tipo="erro">Use só se você operou na corretora com o período fechado. A operação entra marcada como violação de trava e nunca é escondida.</Aviso>
       )}
+      {modo === 'posterior' && (
+        <p className="mut pequeno">Entra com entrada e saída juntas e fica marcada como registrada depois. As travas e o limite de risco daquele dia continuam valendo.</p>
+      )}
       {erro && <Aviso tipo="erro">{erro}</Aviso>}
 
+      {dia && (
+        <div className="campo" style={{ maxWidth: 200 }}>
+          <label htmlFor={`${modo}-hora`}>Hora da entrada</label>
+          <input id={`${modo}-hora`} type="time" required value={hora} onChange={(e) => setHora(e.target.value)} />
+        </div>
+      )}
       <div className="linha-campos">
         <div className="campo">
           <label htmlFor={`${modo}-ativo`}>Ativo</label>
@@ -158,9 +196,9 @@ export function FormularioOperacao({
       </div>
 
       {risco !== null && (
-        <p className={`risco-ao-vivo ${acimaDoLimite && modo === 'planejada' ? 'bad' : ''}`}>
+        <p className={`risco-ao-vivo ${acimaDoLimite && modo !== 'violacao' ? 'bad' : ''}`}>
           Risco: <Dinheiro centavos={risco} /> ({((pctCapital ?? 0) * 100).toFixed(2).replace('.', ',')}% do capital de <Dinheiro centavos={capitalCentavos} />)
-          {acimaDoLimite && modo === 'planejada' && <>. Acima de 1%: o registro será recusado (T-04).</>}
+          {acimaDoLimite && modo !== 'violacao' && <>. Acima de 1%: o registro será recusado (T-04).</>}
           <span className="mut pequeno"> Multiplicador {mercado === 'mini_indice' ? 'R$ 0,20 por ponto por contrato' : '1'} (T-03).</span>
         </p>
       )}
@@ -197,15 +235,29 @@ export function FormularioOperacao({
         </div>
       )}
 
+      {modo !== 'planejada' && (
+        <div className="linha-campos">
+          <Preco id={`${modo}-saida`} rotulo="Saída" texto={saida} aoMudar={setSaida} />
+          <div className="campo">
+            <label htmlFor={`${modo}-custos`}>Custos (R$)</label>
+            <input id={`${modo}-custos`} inputMode="decimal" placeholder="0,00" value={custos} onChange={(e) => setCustos(e.target.value.replace(/[^\d.,]/g, ''))} />
+          </div>
+        </div>
+      )}
+      {modo === 'posterior' && (
+        <>
+          <label className="marcar">
+            <input type="checkbox" checked={seguiu} onChange={(e) => setSeguiu(e.target.checked)} />
+            Seguiu o plano
+          </label>
+          <div className="campo">
+            <label htmlFor="posterior-obs">Observação (opcional)</label>
+            <input id="posterior-obs" maxLength={1000} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
+          </div>
+        </>
+      )}
       {modo === 'violacao' && (
         <>
-          <div className="linha-campos">
-            <Preco id="violacao-saida" rotulo="Saída" texto={saida} aoMudar={setSaida} />
-            <div className="campo">
-              <label htmlFor="violacao-custos">Custos (R$)</label>
-              <input id="violacao-custos" inputMode="decimal" placeholder="0,00" value={custos} onChange={(e) => setCustos(e.target.value.replace(/[^\d.,]/g, ''))} />
-            </div>
-          </div>
           <div className="campo">
             <label htmlFor="violacao-obs">Por que operou com o período fechado</label>
             <input id="violacao-obs" maxLength={1000} value={observacao} onChange={(e) => setObservacao(e.target.value)} />
@@ -218,7 +270,7 @@ export function FormularioOperacao({
       )}
 
       <button className={`botao ${modo === 'violacao' ? 'perigo' : ''}`} disabled={enviando || (modo === 'violacao' && !confirmado)}>
-        {enviando ? 'Registrando...' : modo === 'planejada' ? 'Registrar operação' : 'Registrar violação'}
+        {enviando ? 'Registrando...' : modo === 'violacao' ? 'Registrar violação' : 'Registrar operação'}
       </button>
     </form>
   )

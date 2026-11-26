@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCarregar } from '../../lib/useCarregar'
-import { encerrarDia, encerrarOperacao, listarOperacoes, listarSetups, obterNotaDoDia, salvarNotaDoDia, statusHoje } from '../../lib/services/tradeService'
-import { dataEmSaoPaulo } from '../../lib/calculos/datas'
-import { paraPreco, resultadoBrutoCentavos } from '../../lib/calculos/trade'
-import { paraCentavos } from '../../lib/calculos/dinheiro'
+import { encerrarDia, listarOperacoes, listarSetups, obterNotaDoDia, statusHoje } from '../../lib/services/tradeService'
+import { dataEmSaoPaulo, inicioDoMes } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
 import { revisaoDoDia } from '../../lib/services/noticiasService'
-import type { Operacao, Setup } from '../../lib/tipos'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, EstadoVazio } from '../../componentes/Basicos'
 import { FaixaTrava } from './FaixaTrava'
 import { FormularioOperacao } from './FormularioOperacao'
+import { CalendarioTrade } from './CalendarioTrade'
+import { DiaPassado } from './DiaPassado'
+import { EncerrarOperacao, NotaDoDia, TabelaOperacoes } from './PartesDoDia'
 import './trade.css'
 
-/** Trade, dia (docs/06_COMPONENTES): status das travas, formulário e operações do dia. */
+/** Trade (docs/06_COMPONENTES): status das travas de hoje, calendário do mês (T-10) e o dia escolhido. */
 export function Trade() {
   const hoje = dataEmSaoPaulo()
   const { dados, erro, carregando, recarregar } = useCarregar(async () => {
@@ -27,6 +27,10 @@ export function Trade() {
   }, [hoje])
   const [mensagem, setMensagem] = useState<{ tipo: 'erro' | 'sucesso'; texto: string } | null>(null)
   const [mostrarViolacao, setMostrarViolacao] = useState(false)
+  const [diaEscolhido, setDiaEscolhido] = useState(hoje)
+  const [mesVisivel, setMesVisivel] = useState(() => inicioDoMes(hoje))
+  // Sobe a cada registro, para o calendário recarregar o mês
+  const [versao, setVersao] = useState(0)
 
   if (carregando) return <Carregando />
   if (erro || !dados) return <ErroComAcao erro={erro ?? ''} tentarDeNovo={recarregar} />
@@ -48,6 +52,7 @@ export function Trade() {
   const sucesso = (texto: string) => {
     setMensagem({ tipo: 'sucesso', texto })
     setMostrarViolacao(false)
+    setVersao((v) => v + 1)
     recarregar()
   }
 
@@ -74,34 +79,64 @@ export function Trade() {
       {!s.aberto && s.motivo && <FaixaTrava motivo={s.motivo} reabreEm={s.reabre_em} />}
       {mensagem && <Aviso tipo={mensagem.tipo}>{mensagem.texto}</Aviso>}
 
-      <section className="painel">
-        <div className="grade" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-          <div>
-            <h3>Resultado de hoje</h3>
-            <p className="medio"><Dinheiro centavos={s.resultado_dia_centavos} semantico /></p>
+      <CalendarioTrade
+        mes={mesVisivel}
+        hoje={hoje}
+        escolhido={diaEscolhido}
+        versao={versao}
+        aoEscolher={(d) => {
+          setDiaEscolhido(d)
+          setMensagem(null)
+        }}
+        aoMudarMes={setMesVisivel}
+      />
+
+      {diaEscolhido !== hoje ? (
+        <>
+          <div className="acoes" style={{ marginTop: 0, marginBottom: 16 }}>
+            <button type="button" className="botao secundario" onClick={() => { setDiaEscolhido(hoje); setMesVisivel(inicioDoMes(hoje)) }}>
+              Voltar para hoje
+            </button>
           </div>
-          <div>
-            <h3>Meta do dia (M-10)</h3>
-            <p className="medio num"><Dinheiro centavos={s.meta_dia_centavos} /></p>
+          <DiaPassado
+            key={diaEscolhido}
+            dia={diaEscolhido}
+            hoje={hoje}
+            setups={dados.setups}
+            aoSalvar={sucesso}
+            aoErro={(t) => setMensagem({ tipo: 'erro', texto: t })}
+          />
+        </>
+      ) : (
+      <>
+        <section className="painel">
+          <div className="grade" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
+            <div>
+              <h3>Resultado de hoje</h3>
+              <p className="medio"><Dinheiro centavos={s.resultado_dia_centavos} semantico /></p>
+            </div>
+            <div>
+              <h3>Meta do dia (M-10)</h3>
+              <p className="medio num"><Dinheiro centavos={s.meta_dia_centavos} /></p>
+            </div>
+            <div>
+              <h3>Limite de perda do dia (M-11)</h3>
+              <p className="medio num"><Dinheiro centavos={s.perda_dia_centavos} /></p>
+            </div>
+            <div>
+              <h3>Semana / limite (M-12)</h3>
+              <p style={{ fontVariantNumeric: 'tabular-nums' }}><Dinheiro centavos={s.resultado_semana_centavos} semantico /> de −<Dinheiro centavos={s.perda_semana_centavos} /></p>
+            </div>
+            <div>
+              <h3>Mês / limite (M-13)</h3>
+              <p style={{ fontVariantNumeric: 'tabular-nums' }}><Dinheiro centavos={s.resultado_mes_centavos} semantico /> de −<Dinheiro centavos={s.perda_mes_centavos} /></p>
+            </div>
+            <div>
+              <h3>Risco por operação (R)</h3>
+              <p className="num"><Dinheiro centavos={s.risco_operacao_centavos} /></p>
+            </div>
           </div>
-          <div>
-            <h3>Limite de perda do dia (M-11)</h3>
-            <p className="medio num"><Dinheiro centavos={s.perda_dia_centavos} /></p>
-          </div>
-          <div>
-            <h3>Semana / limite (M-12)</h3>
-            <p style={{ fontVariantNumeric: 'tabular-nums' }}><Dinheiro centavos={s.resultado_semana_centavos} semantico /> de −<Dinheiro centavos={s.perda_semana_centavos} /></p>
-          </div>
-          <div>
-            <h3>Mês / limite (M-13)</h3>
-            <p style={{ fontVariantNumeric: 'tabular-nums' }}><Dinheiro centavos={s.resultado_mes_centavos} semantico /> de −<Dinheiro centavos={s.perda_mes_centavos} /></p>
-          </div>
-          <div>
-            <h3>Risco por operação (R)</h3>
-            <p className="num"><Dinheiro centavos={s.risco_operacao_centavos} /></p>
-          </div>
-        </div>
-      </section>
+        </section>
 
       <div className="trade-colunas">
         <div>
@@ -140,118 +175,9 @@ export function Trade() {
           )}
         </div>
       </div>
+      </>
+      )}
     </>
   )
 }
 
-export function TabelaOperacoes({ ops, setups }: { ops: Operacao[]; setups: Setup[] }) {
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th>Ativo</th>
-          <th>Setup</th>
-          <th className="num">Líquido</th>
-          <th className="num">R</th>
-        </tr>
-      </thead>
-      <tbody>
-        {ops.map((o) => (
-          <tr key={o.id}>
-            <td>
-              {o.ativo} <span className="mut pequeno">{o.direcao === 'compra' ? 'compra' : 'venda'} × {o.quantidade}</span>
-              {o.violacao_trava && <div className="marca-violacao">Violação de trava</div>}
-              {o.seguiu_plano === false && !o.violacao_trava && <div className="warn pequeno">Fora do plano</div>}
-            </td>
-            <td className="pequeno">{setups.find((s) => s.id === o.setup_id)?.nome} · {o.timeframe_entrada}</td>
-            <td className="num"><Dinheiro centavos={o.resultado_liquido_centavos ?? 0} semantico /></td>
-            <td className="num">{o.resultado_r !== null ? `${o.resultado_r > 0 ? '+' : o.resultado_r < 0 ? '−' : ''}${Math.abs(o.resultado_r).toFixed(2).replace('.', ',')}R` : ''}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  )
-}
-
-function EncerrarOperacao({ op, setups, aoSalvar, aoErro }: { op: Operacao; setups: Setup[]; aoSalvar: (t: string) => void; aoErro: (t: string) => void }) {
-  const [saida, setSaida] = useState('')
-  const [custos, setCustos] = useState('')
-  const [seguiu, setSeguiu] = useState(true)
-  const [obs, setObs] = useState('')
-  const [enviando, setEnviando] = useState(false)
-  const pSaida = paraPreco(saida)
-  const custosCentavos = custos ? paraCentavos(custos) : 0
-  const previa = pSaida !== null ? resultadoBrutoCentavos({ ...op, entrada: op.preco_entrada, saida: pSaida }) - (custosCentavos ?? 0) : null
-
-  return (
-    <form
-      className="painel"
-      onSubmit={async (e) => {
-        e.preventDefault()
-        if (pSaida === null) return aoErro('Informe o preço de saída.')
-        if (custosCentavos === null) return aoErro('Custos inválidos.')
-        setEnviando(true)
-        const r = await encerrarOperacao(op.id, { saida: pSaida, custosCentavos, seguiuPlano: seguiu, observacao: obs })
-        setEnviando(false)
-        if (r.erro !== null) aoErro(r.erro)
-        else aoSalvar('Operação encerrada.')
-      }}
-    >
-      <h2>
-        Em aberto: {op.ativo} {op.direcao === 'compra' ? 'compra' : 'venda'} × {op.quantidade}
-      </h2>
-      <p className="pequeno mut" style={{ fontVariantNumeric: 'tabular-nums' }}>
-        Entrada {op.preco_entrada.toLocaleString('pt-BR')} · stop {op.preco_stop.toLocaleString('pt-BR')} · alvo {op.preco_alvo.toLocaleString('pt-BR')} · risco <Dinheiro centavos={op.risco_centavos} /> ·{' '}
-        {setups.find((s) => s.id === op.setup_id)?.nome}
-      </p>
-      <div className="linha-campos">
-        <div className="campo">
-          <label htmlFor={`saida-${op.id}`}>Saída</label>
-          <input id={`saida-${op.id}`} inputMode="decimal" value={saida} onChange={(e) => setSaida(e.target.value.replace(/[^\d.,]/g, ''))} />
-        </div>
-        <div className="campo">
-          <label htmlFor={`custos-${op.id}`}>Custos (R$)</label>
-          <input id={`custos-${op.id}`} inputMode="decimal" placeholder="0,00" value={custos} onChange={(e) => setCustos(e.target.value.replace(/[^\d.,]/g, ''))} />
-        </div>
-      </div>
-      {previa !== null && (
-        <p>
-          Resultado líquido: <Dinheiro centavos={previa} semantico />
-        </p>
-      )}
-      <label className="marcar">
-        <input type="checkbox" checked={seguiu} onChange={(e) => setSeguiu(e.target.checked)} />
-        Seguiu o plano
-      </label>
-      <div className="campo">
-        <label htmlFor={`obs-${op.id}`}>Observação (opcional)</label>
-        <input id={`obs-${op.id}`} maxLength={1000} value={obs} onChange={(e) => setObs(e.target.value)} />
-      </div>
-      <button className="botao" disabled={enviando || pSaida === null}>
-        {enviando ? 'Encerrando...' : 'Registrar saída'}
-      </button>
-    </form>
-  )
-}
-
-function NotaDoDia({ data, nota, aoErro }: { data: string; nota: string; aoErro: (t: string) => void }) {
-  const [texto, setTexto] = useState(nota)
-  const [salvo, setSalvo] = useState(false)
-  return (
-    <form
-      className="painel"
-      onSubmit={async (e) => {
-        e.preventDefault()
-        const r = await salvarNotaDoDia(data, texto)
-        if (r.erro !== null) aoErro(r.erro)
-        else setSalvo(true)
-      }}
-    >
-      <div className="campo">
-        <label htmlFor="nota-dia">Nota do dia</label>
-        <textarea id="nota-dia" rows={3} maxLength={2000} value={texto} onChange={(e) => { setTexto(e.target.value); setSalvo(false) }} />
-      </div>
-      <button className="botao secundario" disabled={texto === nota && !salvo}>{salvo ? 'Nota salva' : 'Salvar nota'}</button>
-    </form>
-  )
-}

@@ -60,3 +60,54 @@
 }
 
 .marca-violacao { color: var(--bad); font-weight: 700; font-size: 13px; }
+
+/* Calendário do diário (T-10): segunda a sexta, cada dia um chip de papel */
+.calendario-topo { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.calendario-topo h2 { margin: 0; }
+.calendario-navegacao { display: flex; align-items: center; gap: 8px; }
+.calendario-navegacao .botao { min-width: var(--alvo-minimo); min-height: var(--alvo-minimo); padding: 0 12px; font-size: 20px; }
+.calendario-mes { font: 600 16px/1.2 var(--font-titulo); min-width: 9.5em; text-align: center; }
+.calendario-mes::first-letter { text-transform: uppercase; }
+.calendario-resumo { margin-bottom: 12px; }
+.calendario-grade { display: grid; gap: 6px; margin-bottom: 8px; }
+.calendario-linha { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.calendario-cabecalho { font: 600 12px/1 var(--font-titulo); color: var(--tinta-suave); text-align: center; padding: 2px 0; }
+.calendario-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2px;
+  min-height: 58px;
+  min-width: 0;
+  padding: 6px;
+  border: var(--traco-fino) solid var(--contorno);
+  border-radius: var(--raio-p);
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-p);
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--dur-rapida) var(--curva-suave), box-shadow var(--dur-rapida) var(--curva-suave);
+}
+.calendario-dia.vazio { border: 0; background: none; box-shadow: none; cursor: default; }
+.calendario-dia:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: var(--sombra-pressionada); }
+.calendario-dia .numero-dia { font: 800 15px/1 var(--font-numero); font-variant-numeric: tabular-nums; }
+.calendario-dia .resultado-dia { font: 800 13px/1.1 var(--font-numero); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.calendario-dia .marca-dia, .calendario-dia .violacao-dia { font: 600 10px/1.1 var(--font-texto); color: var(--tinta-suave); }
+.calendario-dia .violacao-dia { color: var(--bad); font-weight: 700; }
+.calendario-dia.positivo { background: var(--ok-claro); }
+.calendario-dia.positivo .resultado-dia { color: var(--ok); }
+.calendario-dia.negativo { background: var(--bad-claro); }
+.calendario-dia.negativo .resultado-dia { color: var(--bad); }
+.calendario-dia.hoje { border-width: var(--traco-grosso); border-color: var(--co); }
+.calendario-dia.feriado { background: var(--superficie-funda); border-style: dashed; box-shadow: none; }
+.calendario-dia.futuro { background: transparent; border-style: dashed; border-color: var(--tinta-suave); color: var(--tinta-suave); box-shadow: none; cursor: not-allowed; }
+.calendario-dia[aria-pressed='true'] { outline: 3px solid var(--co); outline-offset: 2px; transform: translate(3px, 3px); box-shadow: var(--sombra-pressionada); }
+.titulo-dia::first-letter { text-transform: uppercase; }
+@media (min-width: 900px) {
+  .calendario-dia { min-height: 72px; padding: 8px 10px; }
+  .calendario-dia .numero-dia { font-size: 17px; }
+  .calendario-dia .resultado-dia { font-size: 14px; }
+  .calendario-dia .marca-dia, .calendario-dia .violacao-dia { font-size: 12px; }
+}

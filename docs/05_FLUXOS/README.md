@@ -34,6 +34,13 @@ flowchart TD
 2. Existe só a opção "Registrar operação já executada (violação)", com confirmação.
 3. A operação entra marcada e vai para o fechamento.
 
+## Operação de um dia passado (T-10, ADR-007)
+1. Na tela Trade, tocar no dia no calendário (só segunda a sexta; feriado e dia futuro não aceitam registro).
+2. O detalhe mostra o resultado e a trava daquele dia, e as operações já registradas.
+3. Dia aberto: "Registrar operação deste dia" pede a hora da entrada, os dados de sempre e já a saída e os custos.
+4. Dia fechado pela trava: só "Registrar operação já executada (violação)".
+5. A operação aparece como "registrada depois" e muda o resultado da semana e do mês na hora.
+
 ## Fechamento mensal (dia 1)
 1. O sistema pré-preenche renda, gastos e aportes do mês.
 2. O dono confere os saldos da carteira e ajusta o que mudou.

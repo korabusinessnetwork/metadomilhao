@@ -168,6 +168,7 @@ export interface Operacao {
   observacao: string | null
   violacao_trava: boolean
   revisao_noticias_id: string | null
+  criado_em: string
 }
 
 export interface StatusTravasBanco {

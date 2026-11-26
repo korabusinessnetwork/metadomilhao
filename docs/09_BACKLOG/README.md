@@ -30,6 +30,7 @@
 - [x] Apuração de IR e DARF estimado (IR-01 a IR-04)
 - [x] P-02 e P-04 aplicadas no banco
 - [x] Feriados da B3 no "próximo dia útil" e no vencimento do DARF (Fase 3)
+- [x] Calendário do diário na tela Trade, com registro posterior de dia passado (T-10, ADR-007)
 
 ## Fase 3, Revisão de notícias por IA
 - [x] Watchlist (máximo 10, garantido no banco)

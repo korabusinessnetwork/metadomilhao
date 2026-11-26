@@ -6,7 +6,7 @@ import { executar, falha, ok, type Resultado } from './resultado'
 
 const CAMPOS_PARAMETROS = 'id, vigente_desde, risco_operacao_centavos, stop_gain_r, stop_loss_dia_r, pct_perda_dia, pct_perda_semana, pct_perda_mes, aumento_risco'
 const CAMPOS_SETUP = 'id, nome, descricao, ativo'
-const CAMPOS_OPERACAO = 'id, data, aberta_em, fechada_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, preco_saida, risco_centavos, resultado_bruto_centavos, custos_centavos, resultado_liquido_centavos, resultado_r, setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia, noticia_descricao, seguiu_plano, observacao, violacao_trava, revisao_noticias_id'
+const CAMPOS_OPERACAO = 'id, data, aberta_em, fechada_em, ativo, mercado, direcao, quantidade, preco_entrada, preco_stop, preco_alvo, preco_saida, risco_centavos, resultado_bruto_centavos, custos_centavos, resultado_liquido_centavos, resultado_r, setup_id, tendencia_diario, tendencia_h1, tendencia_h4, timeframe_entrada, teve_noticia, noticia_descricao, seguiu_plano, observacao, violacao_trava, revisao_noticias_id, criado_em'
 const CAMPOS_STATUS = 'data, aberto, motivo, reabre_em, meta_dia_centavos, perda_dia_centavos, perda_semana_centavos, perda_mes_centavos, resultado_dia_centavos, resultado_semana_centavos, resultado_mes_centavos, capital_inicio_dia_centavos, risco_operacao_centavos'
 
 // numeric chega como texto do PostgREST; a lógica usa number
@@ -75,9 +75,10 @@ export async function listarTodasFechadas(): Promise<Resultado<Operacao[]>> {
   return ok(r.dados.map(normalizarOperacao))
 }
 
-function linhaDaOperacao(p: Omit<PlanoOperacao, 'capitalCentavos'> & { ativo: string; revisaoNoticiasId?: string | null }) {
+function linhaDaOperacao(p: Omit<PlanoOperacao, 'capitalCentavos'> & { ativo: string; revisaoNoticiasId?: string | null; abertaEm?: string }) {
   return {
-    aberta_em: new Date().toISOString(),
+    // Hoje: o instante do registro. Dia passado (T-10): a hora informada naquele dia.
+    aberta_em: p.abertaEm ?? new Date().toISOString(),
     ativo: p.ativo.trim().toUpperCase(),
     mercado: p.mercado,
     direcao: p.direcao,
@@ -109,7 +110,7 @@ export async function registrarOperacao(p: PlanoOperacao & { ativo: string; revi
 
 /** TR-03: operação já executada com o período fechado. Entra marcada e com a saída. */
 export async function registrarViolacao(
-  p: PlanoOperacao & { ativo: string; saida: number; custosCentavos: number; observacao: string; revisaoNoticiasId?: string | null },
+  p: PlanoOperacao & { ativo: string; saida: number; custosCentavos: number; observacao: string; revisaoNoticiasId?: string | null; abertaEm?: string },
 ): Promise<Resultado<null>> {
   const erros = validarPlanoOperacao({ ...p, capitalCentavos: Number.MAX_SAFE_INTEGER }).filter((e) => !e.includes('T-04'))
   if (!(p.saida > 0)) erros.push('Informe o preço de saída.')
@@ -120,6 +121,41 @@ export async function registrarViolacao(
       .insert({ ...linhaDaOperacao(p), preco_saida: p.saida, custos_centavos: p.custosCentavos, violacao_trava: true, seguiu_plano: false, observacao: p.observacao.trim() || null })
       .then((r) => ({ data: null, error: r.error })),
   )
+}
+
+/**
+ * T-10: operação de um dia passado, lançada depois. Entra já com a saída e passa pela trava e pela T-04 daquele dia
+ * (o banco confere). Aparece como "registrada depois" porque o banco carimba criado_em.
+ */
+export async function registrarPosterior(
+  p: PlanoOperacao & { ativo: string; abertaEm: string; saida: number; custosCentavos: number; seguiuPlano: boolean; observacao: string },
+): Promise<Resultado<null>> {
+  const erros = validarPlanoOperacao(p)
+  if (!/^[A-Z0-9]{4,12}$/.test(p.ativo.trim().toUpperCase())) erros.unshift('Código do ativo inválido (ex.: WINZ26, PETR4).')
+  if (!(p.saida > 0)) erros.push('Informe o preço de saída.')
+  if (!Number.isInteger(p.custosCentavos) || p.custosCentavos < 0) erros.push('Custos inválidos.')
+  if (erros.length > 0) return { dados: null, erro: erros.join(' ') }
+  return executar(
+    supabase
+      .from('operacao')
+      .insert({ ...linhaDaOperacao(p), preco_saida: p.saida, custos_centavos: p.custosCentavos, seguiu_plano: p.seguiuPlano, observacao: p.observacao.trim() || null })
+      .then((r) => ({ data: null, error: r.error })),
+  )
+}
+
+/** TR-01 para um dia qualquer (o calendário usa nos dias passados). null quando não havia limites nessa data. */
+export async function statusDoDia(data: string): Promise<Resultado<StatusTravasBanco | null>> {
+  const r = await executar<Omit<StatusTravasBanco, 'data'>[]>(supabase.rpc('status_travas', { p_data: data }).select(CAMPOS_STATUS.replace('data, ', '')).then((x) => ({ data: (x.data ?? []) as unknown as Omit<StatusTravasBanco, 'data'>[], error: x.error })))
+  if (r.erro !== null) return r
+  const linha = r.dados[0]
+  return ok(linha && linha.aberto !== null ? { ...linha, data } : null)
+}
+
+/** Dias sem pregão na B3 (nacionais e só da bolsa), para o calendário. */
+export async function feriadosB3(): Promise<Resultado<string[]>> {
+  const r = await executar<{ data: string }[]>(supabase.from('feriado_b3').select('data'))
+  if (r.erro !== null) return r
+  return ok(r.dados.map((f) => f.data))
 }
 
 export async function encerrarOperacao(id: string, e: { saida: number; custosCentavos: number; seguiuPlano: boolean; observacao: string }): Promise<Resultado<null>> {

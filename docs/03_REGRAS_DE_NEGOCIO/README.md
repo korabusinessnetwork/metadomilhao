@@ -77,6 +77,7 @@ Cada regra tem um código. Código e testes citam o código da regra.
 | T-07 | Expectativa só é exibida como "confiável" a partir de 100 operações. Antes disso, mostra "amostra pequena". |
 | T-08 | Aumento de risco por operação: só depois de 100 operações registradas, expectativa líquida positiva e zero violações de trava nos últimos 30 dias. Aumento máximo de 25% por etapa, e no máximo uma etapa a cada 6 meses. |
 | T-09 | Resultado de trade só entra como premissa no plano do milhão quando T-08 for atendida. Antes disso, aparece só como cenário. |
+| T-10 | Registro posterior (ADR-007): operação de um dia passado entra pelo calendário já com a saída e a hora da entrada, só em dia de pregão, e fica marcada como "registrada depois" (`criado_em`, carimbado pelo banco). As travas e a T-04 daquele dia valem: dia fechado só aceita violação. Dia futuro é recusado. |
 
 ## 6. Imposto (IR)
 

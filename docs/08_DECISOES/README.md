@@ -8,6 +8,7 @@
 | [ADR-004](ADR-004-revisao-noticias-ia.md) | Revisão de notícias pré-pregão com a API do Claude, com teto de custo | Aceito |
 | [ADR-005](ADR-005-login-sem-segundo-fator.md) | Login só com e-mail e senha, sem segundo fator | Aceito |
 | [ADR-006](ADR-006-visual-cartoon.md) | Visual cartoon no app | Aceito |
+| [ADR-007](ADR-007-calendario-trade-registro-posterior.md) | Calendário do diário de trade com registro posterior | Aceito |
 
 Novo ADR: copie `adr-000-template.md`, use o próximo número, atualize esta tabela e `memory/decisions.md`.
 - ADR-005: Login só com e-mail e senha, sem segundo fator (2026-11-26)

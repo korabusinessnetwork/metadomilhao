@@ -39,6 +39,6 @@ Ordem: da mais importante para a menos importante.
 - **Passo a passo:** depois da P01, abrir https://rota-do-milhao-ochre.vercel.app no navegador do celular e "Adicionar à tela inicial".
 - **Como confirmar que funcionou:** o ícone abre o app em tela cheia; com o modo avião, a tela de gasto abre e o gasto fica aguardando envio.
 
-## P06 Decidir se o visual cartoon entra no app [prioridade: baixa]
+## ~~P06 Decidir se o visual cartoon entra no app~~ [resolvida em 26/11/2026: aplicado, ADR-006]
 - **Por quê:** o design system cartoon está publicado (https://claude.ai/artifact/CQozqPsmkRhyoqWCCxvuhK), mas o app continua com o visual atual.
 - **Passo a passo:** olhar o artifact e dizer se aplica.

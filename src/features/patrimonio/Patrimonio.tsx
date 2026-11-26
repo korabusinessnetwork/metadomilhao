@@ -82,7 +82,7 @@ export function Patrimonio() {
               </tr>
               <tr>
                 <td>3. Capital de trade</td>
-                <td className="num mut">{resumo.reservaCompleta ? 'Fase 2' : 'Bloqueado até a reserva completa (P-02)'}</td>
+                <td className={resumo.reservaCompleta ? 'num mut' : 'direita mut pequeno'}>{resumo.reservaCompleta ? 'Fase 2' : 'Bloqueado até a reserva completa (P-02)'}</td>
               </tr>
             </tbody>
           </table>

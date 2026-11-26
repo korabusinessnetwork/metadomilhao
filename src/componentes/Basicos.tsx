@@ -18,7 +18,12 @@ export function SeloProjecao({ children }: { children: ReactNode }) {
   return (
     <span className="selo-projecao">
       {children}
-      <span className="rotulo">projeção</span>
+      <span className="rotulo">
+        <svg className="traco-selo" aria-hidden="true">
+          <rect />
+        </svg>
+        projeção
+      </span>
     </span>
   )
 }
@@ -42,10 +47,23 @@ export function BarraMeta({
   const pct = metaCentavos > 0 ? Math.min(100, (realCentavos / metaCentavos) * 100) : realCentavos > 0 ? 100 : 0
   const passou = realCentavos > metaCentavos
   const estourou = sentido === 'limite' && passou
+  const batida = sentido === 'objetivo' && realCentavos >= metaCentavos
   return (
-    <div className={`barra-meta ${estourou ? 'estourou' : ''}`}>
-      <div className="trilho" role="progressbar" aria-label={rotulo} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>
-        <div className="preenchido" style={{ width: `${pct}%` }} />
+    <div className={`barra-meta ${estourou ? 'estourou' : ''} ${batida ? 'batida' : ''}`}>
+      <div className="palco">
+        <div className="trilho" role="progressbar" aria-label={rotulo} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}>
+          <div className="preenchido" style={{ width: `${pct}%` }} />
+        </div>
+        {/* Moedinha decorativa: o texto "meta atingida" carrega a informação */}
+        {batida && (
+          <span className="moeda" aria-hidden="true">
+            <svg viewBox="0 0 40 40">
+              <circle className="corpo" cx="20" cy="20" r="17" />
+              <circle className="brilho" cx="20" cy="20" r="10" />
+              <path className="brilho" d="M12 13 L15 10" />
+            </svg>
+          </span>
+        )}
       </div>
       <div className="legenda">
         <span>

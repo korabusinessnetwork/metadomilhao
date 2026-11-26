@@ -16,6 +16,7 @@
 | ADR-003 | Travas de risco aplicadas no banco, sem esconder violações | Aceito | 2026-11-25 |
 | ADR-004 | Revisão de notícias pré-pregão com a API do Claude, com teto de custo | Aceito | 2026-11-25 |
 | ADR-005 | Login só com e-mail e senha, sem segundo fator | Aceito | 2026-11-26 |
+| ADR-006 | Visual cartoon no app | Aceito | 2026-11-26 |
 
 ## Decisões de produto registradas fora de ADR
 - Sistemática começa na data de mudança configurada no perfil (F-01, F-02).

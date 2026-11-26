@@ -10,6 +10,7 @@ import type { LancamentoPendente } from '../../lib/offline/fila'
 import { somarMeses, dataEmSaoPaulo, inicioDoMes } from '../../lib/calculos/datas'
 import { ok } from '../../lib/services/resultado'
 import { CampoValor, SeletorCategoria } from '../../componentes/Campos'
+import { avisarGastoSalvo } from '../../app/avisoGasto'
 import { Aviso, Carregando, Dinheiro, ErroComAcao, EstadoVazio } from '../../componentes/Basicos'
 import { Link } from 'react-router-dom'
 
@@ -69,6 +70,7 @@ export function NovoLancamento() {
     const lancamentos = mesclarPendentes(dados.mes.lancamentos.filter((l) => !l.pendente), [...fila.pendentes(), ...(naFila ? [] : [pendente])], dados.mes.mes)
     const limite = calcularLimite(dados.mes.hoje, dados.mes.orcamento, dados.mes.categorias, lancamentos)
     setSalvo({ restante: limite.restanteHojeCentavos, naFila })
+    avisarGastoSalvo()
     dados.mes.lancamentos = lancamentos
     setValor(null)
     setDescricao('')
@@ -77,7 +79,7 @@ export function NovoLancamento() {
 
   if (salvo)
     return (
-      <section className="painel">
+      <section className="painel entra">
         <h1>{salvo.naFila ? 'Gasto guardado no aparelho' : 'Gasto salvo'}</h1>
         {salvo.naFila && <Aviso>Sem conexão agora. Ele sobe sozinho quando a internet voltar e já conta no limite de hoje.</Aviso>}
         <p>

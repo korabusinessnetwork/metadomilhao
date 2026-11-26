@@ -1,42 +1,62 @@
+/* Trava ativa: fita de interdição, cadeado que cai e assenta. Sem botão de desbloquear (ADR-003). */
 .faixa-trava {
-  background: var(--bad);
-  color: #fff;
-  padding: 12px 16px;
-  border-radius: var(--raio);
-  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bad-claro);
+  color: var(--tinta);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-m);
+  box-shadow: var(--sombra-m);
+  margin-bottom: var(--espaco-6);
+  transform-origin: 50% 0;
+  animation: balanca var(--dur-media) ease-in-out 2 both;
 }
+.faixa-trava .listras { height: 12px; border-bottom: var(--traco-grosso) solid var(--contorno); background: repeating-linear-gradient(-45deg, var(--bad) 0 10px, var(--bad-claro) 10px 20px); }
+.faixa-trava .corpo-trava { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px 16px; }
+.faixa-trava .cadeado { flex: none; width: 44px; height: 44px; animation: cadeado 640ms var(--curva-mola) both; }
+.faixa-trava .cadeado .caixa { fill: var(--bad); stroke: var(--contorno); stroke-width: 3; }
+.faixa-trava .cadeado .alca { fill: none; stroke: var(--contorno); stroke-width: 4; stroke-linecap: round; }
+.faixa-trava .cadeado .furo { fill: var(--bad-claro); stroke: var(--contorno); stroke-width: 2; }
+.faixa-trava .titulo-trava { display: block; font: 600 19px/24px var(--font-titulo); }
+.faixa-trava .reabre { display: inline-block; margin-top: 8px; padding: 2px 10px; border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-p); background: var(--superficie); font-size: 14px; font-weight: 600; }
+@keyframes balanca { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.6deg); } 75% { transform: rotate(1.6deg); } }
+@keyframes cadeado { 0% { transform: translateY(-10px) scale(0.6); } 60% { transform: translateY(2px) scale(1.12); } 100% { transform: none; } }
 
-.trade-colunas { display: grid; gap: 16px; }
+.trade-colunas { display: grid; gap: var(--espaco-6); }
 @media (min-width: 900px) {
   .trade-colunas { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
 }
 
-.opcoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.opcoes { display: flex; gap: 10px; flex-wrap: wrap; }
 .opcoes button {
-  min-height: var(--toque);
-  padding: 4px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--raio);
-  background: var(--bg);
-  color: var(--ink);
+  min-height: var(--alvo-minimo);
+  padding: 4px 14px;
+  border: var(--traco-fino) solid var(--contorno);
+  border-radius: var(--raio-pilula);
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-p);
+  font-weight: 600;
   cursor: pointer;
+  transition: transform var(--dur-rapida) var(--curva-suave), box-shadow var(--dur-rapida) var(--curva-suave);
 }
-.opcoes button[aria-pressed='true'] { border-color: var(--co); background: var(--zone); color: var(--co); font-weight: 600; }
+.opcoes button[aria-pressed='true'] { background: var(--co-claro); border-width: var(--traco-grosso); transform: translate(3px, 3px); box-shadow: var(--sombra-pressionada); }
 
 .grupo-campo { margin-bottom: 12px; }
-.grupo-campo > span { display: block; font-size: 13px; font-weight: 500; color: var(--mut); margin-bottom: 4px; }
+.grupo-campo > span { display: block; font-size: 13px; font-weight: 600; color: var(--tinta-suave); margin-bottom: 4px; }
 
-.risco-ao-vivo { font-variant-numeric: tabular-nums; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--raio); margin-bottom: 12px; }
+.risco-ao-vivo { font-variant-numeric: tabular-nums; padding: 10px 14px; border: var(--traco-fino) solid var(--contorno); border-radius: var(--raio-m); background: var(--superficie-funda); margin-bottom: 12px; }
 
 .selo-amostra {
   display: inline-block;
   font-size: 13px;
   font-weight: 600;
   color: var(--warn);
-  border: 1px dashed var(--warn);
-  border-radius: var(--raio);
-  padding: 0 6px;
+  background: var(--warn-claro);
+  border: var(--traco-fino) dashed var(--warn);
+  border-radius: var(--raio-p);
+  padding: 0 8px;
   margin-left: 6px;
 }
 
-.marca-violacao { color: var(--bad); font-weight: 600; font-size: 13px; }
+.marca-violacao { color: var(--bad); font-weight: 700; font-size: 13px; }

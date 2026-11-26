@@ -1,13 +1,13 @@
-/* Celular: navegação inferior com botão + central. Desktop (≥ 900px): barra lateral. */
+/* Celular: navegação inferior de papel com o + central. Desktop (≥ 900px): barra lateral. */
 .app {
   min-height: 100dvh;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
 }
 
 .conteudo {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 20px 16px;
 }
 
 .navegacao {
@@ -17,10 +17,12 @@
   bottom: 0;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  align-items: center;
-  background: var(--bg);
-  border-top: 1px solid var(--line);
-  padding-bottom: env(safe-area-inset-bottom);
+  align-items: end;
+  background: var(--superficie);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-bottom: 0;
+  border-radius: var(--raio-g) var(--raio-g) 0 0;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
   z-index: 10;
 }
 
@@ -29,66 +31,106 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60px;
-  color: var(--mut);
+  gap: 2px;
+  min-height: 56px;
+  min-width: var(--alvo-minimo);
+  margin: 0 2px;
+  border-radius: var(--raio-m);
+  color: var(--tinta-suave);
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
+  font: 600 12px/16px var(--font-titulo);
+  transition: background-color var(--dur-rapida) var(--curva-suave);
 }
-
-.navegacao a.ativo { color: var(--co); font-weight: 600; }
+.navegacao a svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.navegacao a.ativo { background: var(--co-claro); color: var(--tinta); }
+.navegacao a.ativo svg { stroke: var(--co); }
 
 .navegacao .mais-botao {
   justify-self: center;
-  width: 56px;
-  height: 56px;
-  min-height: 56px;
-  border-radius: 50%;
+  align-self: start;
+  width: var(--alvo-mais);
+  height: var(--alvo-mais);
+  min-height: var(--alvo-mais);
+  margin-top: -30px;
+  display: grid;
+  place-items: center;
   background: var(--co);
-  color: #fff;
-  font-size: 30px;
-  line-height: 1;
-  margin-top: -20px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+  color: var(--co-tinta);
+  border: var(--traco-grosso) solid var(--contorno);
+  border-radius: var(--raio-pilula);
+  box-shadow: var(--sombra-g);
+  transition: transform var(--dur-rapida) var(--curva-suave), box-shadow var(--dur-rapida) var(--curva-suave);
 }
+.navegacao .mais-botao svg { width: 30px; height: 30px; stroke: currentColor; stroke-width: 4; }
+.navegacao .mais-botao.ativo { background: var(--co); color: var(--co-tinta); }
+.navegacao .mais-botao.ativo svg { stroke: currentColor; }
+.navegacao .mais-botao:active { transform: translate(5px, 5px); box-shadow: var(--sombra-pressionada); }
+.navegacao .mais-botao .texto-mais { display: none; }
 
-.navegacao .mais-botao.ativo { color: #fff; }
+/* Gasto salvo: o + quica duas vezes (dispara na gravação, não no toque) */
+.navegacao .mais-botao.quica { animation: quica var(--dur-media) var(--curva-mola) 2 alternate; }
+@keyframes quica {
+  0% { transform: translateY(0) scale(1, 1); }
+  30% { transform: translateY(2px) scale(1.12, 0.86); }
+  100% { transform: translateY(-14px) scale(0.94, 1.08); }
+}
 
 .marca { display: none; }
 
 @media (min-width: 900px) {
-  .app { padding-bottom: 0; padding-left: 220px; }
+  .app { padding-bottom: 0; padding-left: 244px; }
   .navegacao {
-    top: 0;
+    top: 16px;
+    bottom: 16px;
+    left: 16px;
     right: auto;
-    width: 220px;
+    width: 212px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    border-top: 0;
-    border-right: 1px solid var(--line);
-    padding: 16px 8px;
+    border: var(--traco-grosso) solid var(--contorno);
+    border-radius: var(--raio-g);
+    box-shadow: var(--sombra-m);
+    padding: 16px 10px;
     gap: 4px;
   }
-  .navegacao a { flex-direction: row; justify-content: flex-start; padding: 0 12px; min-height: var(--toque); font-size: 16px; border-radius: var(--raio); }
-  .navegacao a.ativo { background: var(--zone); }
-  .navegacao .mais-botao { order: 10; width: auto; height: auto; min-height: var(--toque); border-radius: var(--raio); font-size: 16px; margin: 12px 0 0; justify-content: center; box-shadow: none; }
-  .marca { display: block; font-family: var(--fonte-titulo); font-weight: 600; font-size: 22px; padding: 8px 12px 16px; color: var(--ink); }
-  .conteudo { padding: 24px 32px; }
+  .navegacao a { flex-direction: row; justify-content: flex-start; gap: 12px; padding: 0 12px; min-height: var(--alvo-botao); font-size: 16px; line-height: 20px; margin: 0; }
+  .navegacao .mais-botao {
+    order: 10;
+    width: auto;
+    height: auto;
+    min-height: var(--alvo-botao);
+    margin: 16px 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    border-radius: var(--raio-pilula);
+    box-shadow: var(--sombra-p);
+  }
+  .navegacao .mais-botao svg { width: 20px; height: 20px; stroke-width: 3.5; }
+  .navegacao .mais-botao .texto-mais { display: inline; }
+  .navegacao .mais-botao:hover { transform: translate(-1px, -1px); box-shadow: var(--sombra-m); }
+  .navegacao .mais-botao:active { transform: translate(3px, 3px); }
+  .marca { display: block; font: 700 22px/1.1 var(--font-titulo); padding: 4px 12px 16px; color: var(--tinta); }
+  .conteudo { padding: 32px 32px 40px; }
 }
 
-.cabecalho-tela { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.cabecalho-tela { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
 .cabecalho-tela h1 { margin: 0; }
 
 .tela-centro { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
-.cartao-login { width: 100%; max-width: 380px; }
+.cartao-login { width: 100%; max-width: 400px; box-shadow: var(--sombra-g); }
+.cartao-login h1 { font-size: 30px; }
 
 /* Fila offline (Fase 4): aviso fixo enquanto houver algo para enviar ou recusado */
 .aviso-sincronizacao {
-  border-left: 4px solid var(--warn);
-  background: var(--zone);
-  border-radius: var(--raio);
-  padding: 8px 12px;
-  margin-bottom: 16px;
+  border: var(--traco-grosso) solid var(--contorno);
+  border-left-width: 10px;
+  border-left-color: var(--warn);
+  background: var(--warn-claro);
+  border-radius: var(--raio-m);
+  box-shadow: var(--sombra-p);
+  padding: 10px 14px;
+  margin-bottom: 20px;
 }
 .aviso-sincronizacao p { margin: 4px 0; }

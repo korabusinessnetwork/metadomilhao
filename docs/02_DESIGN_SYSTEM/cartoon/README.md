@@ -1,6 +1,6 @@
 # Design System Cartoon, Rota do Milhão
 
-> **Status: proposta, não adotada.** O estilo vigente é o de `../README.md`. Adotar este exige um ADR em `docs/08_DECISOES/`.
+> **Status: adotado (ADR-006, 26/11/2026).** É o estilo vigente do app. Os tokens usados pelo app estão em `src/estilos/tokens.css`; se mudar `tokens.json`, atualize os dois.
 >
 > Versão navegável (artifact, privado): https://claude.ai/artifact/CQozqPsmkRhyoqWCCxvuhK
 >

@@ -59,9 +59,10 @@ Chegar ao primeiro milhão (em dinheiro de hoje) com um plano medido mês a mês
 - Dados exportáveis a qualquer momento (CSV), sem prisão.
 
 ## Identidade visual
-- Cobalto `#1240e0`, branco, preto, zona clara `#eef2ff`; noite `#0a0d18`.
-- Space Grotesk (títulos e números) + Inter (texto).
-- Estilo de ficha técnica: denso, preciso, números grandes.
+- Visual cartoon (ADR-006): papel azulado `#f2f5ff`, contorno de 3px, sombra chapada, cantos redondos, movimento com mola só para confirmar algo. Noite `#0b0f1f`.
+- Cobalto `#1240e0` como marca; verde, vermelho e âmbar de estado iguais aos de antes.
+- Fredoka (títulos e botões) + Nunito (números) + Inter (texto).
+- O cartoon fica no desenho, nunca nos textos nem nos números.
 
 ## Roadmap
 - **Fase 0, Preparação (até a mudança, ~fev/2027):** só registrar gastos reais e começar a reserva. Usa o protótipo em artifact.

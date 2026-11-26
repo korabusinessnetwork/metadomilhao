@@ -1,0 +1,101 @@
+/* Tokens do design system cartoon (docs/02_DESIGN_SYSTEM/cartoon/tokens.json, adotado no ADR-006).
+   Claro por padrão; escuro pelo sistema (prefers-color-scheme) ou por data-theme="dark". */
+:root {
+  --papel: #f2f5ff;
+  --superficie: #ffffff;
+  --superficie-funda: #e3e9ff;
+  --tinta: #0b0d12;
+  --tinta-suave: #4a5168;
+  --contorno: #0b0d12;
+  --sombra-cor: #0b0d12;
+  --co: #1240e0;
+  --co-tinta: #ffffff;
+  --co-claro: #d6dfff;
+  --ok: #0a7d4f;
+  --ok-claro: #e0f7eb;
+  --bad: #c0261c;
+  --bad-claro: #ffe0dc;
+  --warn: #9a6200;
+  --warn-claro: #fff1d1;
+  --moeda: #ffc21a;
+  --foco: #1240e0;
+  color-scheme: light;
+
+  --espaco-1: 4px;
+  --espaco-2: 8px;
+  --espaco-3: 12px;
+  --espaco-4: 16px;
+  --espaco-6: 24px;
+  --espaco-8: 32px;
+  --raio-p: 10px;
+  --raio-m: 16px;
+  --raio-g: 22px;
+  --raio-pilula: 999px;
+  --traco-fino: 2px;
+  --traco-grosso: 3px;
+  --alvo-minimo: 44px;
+  --alvo-botao: 48px;
+  --alvo-mais: 64px;
+  --dur-rapida: 120ms;
+  --dur-media: 320ms;
+  --dur-lenta: 700ms;
+  --dur-tracejado: 1400ms;
+  --curva-mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --curva-suave: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --font-titulo: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+  --font-numero: 'Nunito', 'Fredoka', system-ui, sans-serif;
+  --font-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root {
+  --sombra-p: 3px 3px 0 var(--sombra-cor);
+  --sombra-m: 5px 5px 0 var(--sombra-cor);
+  --sombra-g: 7px 7px 0 var(--sombra-cor);
+  --sombra-pressionada: 0 0 0 var(--sombra-cor);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --papel: #0b0f1f;
+    --superficie: #18214a;
+    --superficie-funda: #111833;
+    --tinta: #eef1fb;
+    --tinta-suave: #a9b1cb;
+    --contorno: #b8c3ff;
+    --sombra-cor: #3448b8;
+    --co: #5b7cff;
+    --co-tinta: #070a16;
+    --co-claro: #24306e;
+    --ok: #3ccf8e;
+    --ok-claro: #0e3a2a;
+    --bad: #ff6b5e;
+    --bad-claro: #47130f;
+    --warn: #f2b84b;
+    --warn-claro: #3a2905;
+    --moeda: #ffcc3d;
+    --foco: #ffcc3d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --papel: #0b0f1f;
+  --superficie: #18214a;
+  --superficie-funda: #111833;
+  --tinta: #eef1fb;
+  --tinta-suave: #a9b1cb;
+  --contorno: #b8c3ff;
+  --sombra-cor: #3448b8;
+  --co: #5b7cff;
+  --co-tinta: #070a16;
+  --co-claro: #24306e;
+  --ok: #3ccf8e;
+  --ok-claro: #0e3a2a;
+  --bad: #ff6b5e;
+  --bad-claro: #47130f;
+  --warn: #f2b84b;
+  --warn-claro: #3a2905;
+  --moeda: #ffcc3d;
+  --foco: #ffcc3d;
+  color-scheme: dark;
+}

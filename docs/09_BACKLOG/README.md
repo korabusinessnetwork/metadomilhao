@@ -18,7 +18,7 @@
 - [x] Metas mensais e anuais (M-01 a M-06)
 - [x] Exportação CSV
 - [x] PWA instalável no celular e no PC (manifesto e service worker no build)
-- [ ] Criar o projeto Supabase na nuvem, aplicar as migrations e publicar na Vercel (projeto pronto: `vercel.json` e README, seção Publicar)
+- [x] Criar o projeto Supabase na nuvem, aplicar as migrations e publicar na Vercel (https://rota-do-milhao-ochre.vercel.app, 26/11/2026)
 - [ ] Testar a instalação do PWA no celular de verdade
 
 ## Fase 2, Diário de trade

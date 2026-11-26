@@ -11,3 +11,7 @@ supabase/functions/.env
 tsconfig.tsbuildinfo
 .full-auto/.vigia.lock
 .full-auto/vigia.log
+.vercel
+.env*
+!.env.example
+!supabase/functions/.env.example

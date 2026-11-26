@@ -3,12 +3,12 @@
 Coisas que só você pode fazer. O app já funciona com contornos (Supabase local, API do Claude falsa), estas tarefas trocam o contorno pelo real.
 Ordem: da mais importante para a menos importante.
 
-## P01 Criar o projeto Supabase na nuvem e publicar na Vercel [prioridade: alta]
-- **Por quê:** hoje tudo roda só no seu computador. Sem isso não dá para usar no celular.
-- **Contorno atual:** Supabase local no Docker, portas 553xx.
-- **Passo a passo:** ver a seção "Publicar" do `README.md` (criar projeto Free, aplicar as migrations com `supabase db push`, desligar cadastro e ligar MFA TOTP no painel, criar sua conta pelo painel, publicar o front na Vercel com as duas variáveis).
-- **Onde colar o resultado:** `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` nas variáveis do projeto na Vercel.
-- **Como confirmar que funcionou:** abrir a URL da Vercel no celular, entrar, cadastrar o segundo fator e lançar um gasto.
+## P01 Criar a sua conta de acesso no app publicado [prioridade: alta]
+- **Feito pelo Claude em 2026-11-26:** projeto Supabase `rota-do-milhao` (ref `pggoncwoeyjhicgcbxye`, São Paulo, plano Free) com as 7 migrations; login com cadastro público desligado, senha mínima de 12 com letras, números e símbolos, MFA TOTP; app publicado na Vercel em https://rota-do-milhao-ochre.vercel.app com só a URL e a anon key. A senha do banco ficou em `.env.local` (`SUPABASE_DB_SENHA_PRODUCAO`), fora do git.
+- **Falta (só você, porque a senha é sua):**
+  1. Painel do Supabase, projeto `rota-do-milhao`, Authentication, Users, Add user, Create new user.
+  2. Seu e-mail, uma senha forte (12+ com letras, números e símbolos) e marque "Auto Confirm User".
+- **Como confirmar que funcionou:** abrir https://rota-do-milhao-ochre.vercel.app, entrar, cadastrar o segundo fator no app autenticador e lançar um gasto.
 
 ## P02 Ligar a revisão de notícias de verdade [prioridade: alta]
 - **Por quê:** a função está pronta e testada, mas nunca chamou a IA real.
@@ -36,7 +36,7 @@ Ordem: da mais importante para a menos importante.
 
 ## P05 Instalar o app no celular [prioridade: média]
 - **Por quê:** o PWA foi testado no navegador do computador, não num celular de verdade.
-- **Passo a passo:** depois da P01, abrir a URL no navegador do celular e "Adicionar à tela inicial".
+- **Passo a passo:** depois da P01, abrir https://rota-do-milhao-ochre.vercel.app no navegador do celular e "Adicionar à tela inicial".
 - **Como confirmar que funcionou:** o ícone abre o app em tela cheia; com o modo avião, a tela de gasto abre e o gasto fica aguardando envio.
 
 ## P06 Decidir se o visual cartoon entra no app [prioridade: baixa]

@@ -38,6 +38,8 @@ npm run build       # typecheck + build do PWA
 
 ## Publicar (Supabase Free + Vercel Hobby, custo zero)
 
+Em produção desde 26/11/2026: https://rota-do-milhao-ochre.vercel.app (Supabase `rota-do-milhao`, São Paulo). O projeto da Vercel está ligado ao GitHub: todo push no `master` publica sozinho. O passo a passo abaixo serve para recriar do zero.
+
 1. **Supabase:** criar um projeto Free (região São Paulo). Depois, na pasta do projeto:
    ```bash
    supabase login
